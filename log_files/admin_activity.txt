@@ -58,3 +58,15 @@ This file keeps track of successful and unsuccessful admin login attempts and op
 7/7/2022, 6:41:21 pm	Username: sumedh              	Admin created user with user_id: 855366a5-05dc-4a32-9286-e4f26aaf87b3.
 7/7/2022, 6:44:11 pm	Username: sumedh              	Admin Login successful.
 7/7/2022, 6:44:14 pm	Username: sumedh              	Admin deleted user with user_id: 855366a5-05dc-4a32-9286-e4f26aaf87b3.
+7/7/2022, 8:13:11 pm	Username: sumedh              	Admin Login attempted with incorrect password: something.
+7/7/2022, 8:13:17 pm	Username: sumedh              	Admin Login attempted with incorrect password: s.
+7/7/2022, 8:13:17 pm	Username: sumedh              	Admin Login attempted with incorrect password: su.
+7/7/2022, 8:13:17 pm	Username: sumedh              	Admin Login attempted with incorrect password: sud.
+7/7/2022, 8:13:17 pm	Username: sumedh              	Admin Login attempted with incorrect password: sudu.
+7/7/2022, 8:13:18 pm	Username: sumedh              	Admin Login attempted with incorrect password: sudu_.
+7/7/2022, 8:13:18 pm	Username: sumedh              	Admin Login attempted with incorrect password: sudu_1.
+7/7/2022, 8:13:18 pm	Username: sumedh              	Admin Login attempted with incorrect password: sudu_10.
+7/7/2022, 8:13:18 pm	Username: sumedh              	Admin Login attempted with incorrect password: sudu_100.
+7/7/2022, 8:13:18 pm	Username: sumedh              	Admin Login successful.
+7/7/2022, 8:13:34 pm	Username: sumedh              	Image with new user_id: 16857839-7ecd-4acf-be5e-d3d155716760 input by the admin.
+7/7/2022, 8:13:48 pm	Username: sumedh              	Admin created user with user_id: 16857839-7ecd-4acf-be5e-d3d155716760.
