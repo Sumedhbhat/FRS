@@ -18,7 +18,7 @@ export const recognizeImage = createAsyncThunk(
   "image/recognizeImage",
   async (obj, { getState, rejectWithValue }) => {
     const data = await axios
-      .post("http://localhost:3007/admin/recognizeface", {
+      .post(process.env.REACT_APP_SERVER + "/admin/recognizeface", {
         base64img: getState().image.base64img,
         user_id: getState().image.user_id,
         admin: getState().admin.username,
@@ -28,7 +28,9 @@ export const recognizeImage = createAsyncThunk(
         if (res.status === 200) {
           const user = await axios
             .get(
-              "http://localhost:3007/admin/users/?user_id=" + res.data.user_id
+              process.env.REACT_APP_SERVER +
+                "/admin/users/?user_id=" +
+                res.data.user_id
             )
             .then((r) => {
               console.log("inside image getuser");

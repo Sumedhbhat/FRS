@@ -10,7 +10,7 @@ import axios from "axios";
 
 export const addUser = (user) => async (dispatch, getState) => {
   await axios
-    .get("http://localhost:3007/admin/users/create", user)
+    .get("/admin/users/create", user)
     .then((res) => {
       if (res.status === 200) {
         dispatch({

@@ -15,7 +15,7 @@ export const getUser = createAsyncThunk(
   "user/getUserStatus",
   async (userId, { rejectWithValue, getState }) => {
     const data = await axios
-      .get(`http://localhost:3007/admin/users/?user_id=${userId}`)
+      .get(process.env.REACT_APP_SERVER + `/admin/users/?user_id=${userId}`)
       .then((res) => {
         console.log(res);
         if (res.status === 200) {
@@ -38,7 +38,7 @@ export const recognizeUser = createAsyncThunk(
   "recognize/recognizeUserStatus",
   async (image, { rejectWithValue, getState }) => {
     const data = await axios
-      .post("http://localhost:3007/user/recognizeuser", {
+      .post(process.env.REACT_APP_SERVER + "/user/recognizeuser", {
         base64img: getState().recognize.image,
         in_out_status: "IN",
       })

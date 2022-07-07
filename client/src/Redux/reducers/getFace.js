@@ -12,7 +12,7 @@ export const getUser = createAsyncThunk(
   "user/getUserStatus",
   async (userId, { rejectWithValue, getState }) => {
     const data = await axios
-      .get(`http://localhost:3007/admin/users/?user_id=${userId}`)
+      .get(process.env.REACT_APP_SERVER + `/admin/users/?user_id=${userId}`)
       .then((res) => {
         if (res.status === 200) {
           console.log(res);

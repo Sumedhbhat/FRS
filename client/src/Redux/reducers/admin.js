@@ -13,8 +13,9 @@ export const adminLogin = createAsyncThunk(
   async (loginDetails, { getState, rejectWithValue }) => {
     console.log(loginDetails);
     const data = await axios
-      .post("http://localhost:3007/admin/login", loginDetails)
+      .post(process.env.REACT_APP_SERVER + "/admin/login", loginDetails)
       .then((res) => {
+        console.log(res);
         if (res.status === 200) {
           return { ...res.data, ...loginDetails };
         } else {
