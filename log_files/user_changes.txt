@@ -14,3 +14,5 @@ This file keeps track of changes made to user data in the system.
 7/7/2022, 8:01:20 PM	User_id: 00f47ecc-501a-40fe-89ba-f025d4972866	User deleted.
 7/7/2022, 8:13:48 pm	User_id: 16857839-7ecd-4acf-be5e-d3d155716760	User created.
 7/7/2022, 8:26:06 PM	User_id: b6c23b87-bbc0-45f1-8dde-eb755dd083f0	User details updated.
+
+7/7/2022, 9:30:21 pm	User_id: 23e0e0be-e4dc-4976-b53a-ce6eb04d29bb	User created.

@@ -36,9 +36,9 @@ const Navbar = ({ setOptionAdd }) => {
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               onClick={handleAdd}
-              fullWidth={["true", "true", "false"]}
+              fullWidth
             >
-              Add Person
+              Add
             </Button>
           </Grid>
           <Grid item xs sx={{ display: "flex", justifyContent: "center" }}>
@@ -49,7 +49,7 @@ const Navbar = ({ setOptionAdd }) => {
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               onClick={() => dispatch(logOut())}
-              fullWidth={["true", "true", "false"]}
+              fullWidth
             >
               Logout
             </Button>
