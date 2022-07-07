@@ -11,7 +11,6 @@ import {
   InputLabel,
   FormControl,
   FormHelperText,
-  InputBase,
 } from "@mui/material";
 import { toast } from "react-toastify";
 import validator from "validator";
@@ -118,7 +117,7 @@ const ModifyModal = ({ setModify, modify, setModifyOptionAdd }) => {
       >
         <Fade in={modify}>
           <Stack spacing={4} sx={{ py: 2, px: 3 }} className='modifyModalStack'>
-            <InputBase
+            <TextField
               className='ModifyInput'
               value={values.name}
               onChange={(e) => handleChange(e)}
@@ -146,7 +145,7 @@ const ModifyModal = ({ setModify, modify, setModifyOptionAdd }) => {
                 <MenuItem value='O'>Prefer not to say</MenuItem>
               </Select>
             </FormControl>
-            <InputBase
+            <TextField
               className='ModifyInput'
               value={values.city}
               placeholder={"City: " + user.city}
@@ -156,7 +155,7 @@ const ModifyModal = ({ setModify, modify, setModifyOptionAdd }) => {
               variant='outlined'
               fullWidth
             />
-            <InputBase
+            <TextField
               className='ModifyInput'
               value={values.department}
               onChange={(e) => handleChange(e)}
@@ -166,7 +165,7 @@ const ModifyModal = ({ setModify, modify, setModifyOptionAdd }) => {
               variant='outlined'
               fullWidth
             />
-            <InputBase
+            <TextField
               className='ModifyInput'
               value={values.mob_no}
               onChange={(e) => handleChange(e)}
