@@ -25,3 +25,4 @@ server/routes/.DS_Store
 server/utils/.DS_Store
 
 log_files/*
+server/face_encodings/face_encodings.json
