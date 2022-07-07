@@ -1,0 +1,5 @@
+This file keeps track of changes made to user data in the system.
+
+7/7/2022, 11:48:39 am	User_id: 28e7200f-1279-4e85-9939-fe821d295285	User deleted.
+7/7/2022, 11:51:27 am	User_id: 080819b4-f322-4b7c-954c-d79772426b04	User created.
+7/7/2022, 2:11:21 pm	User_id: cba4de6d-4741-405f-b7fc-4940c8777315	User created.

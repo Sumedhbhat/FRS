@@ -1,0 +1,166 @@
+.addModalStack{
+  padding: 25px;
+  border-radius: 10px;
+  background-color: #fff;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px;
+}
+
+.addModalBox{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+}
+
+.modifyModalStack{
+  padding: 25px;
+  border-radius: 10px;
+  background-color: #fff;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px;
+}
+
+.modifyModalBox{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+}
+
+.ModifyInput{
+  border: 2px solid #e2e2e2;
+  border-radius: 5px;
+  padding: 12px;
+}
+
+.ModifyInput:focus{
+  border: 1px solid #525151;
+}
+
+.optionAddModal{
+  
+}
+
+.optionModalStack{
+    padding: 25px;
+  border-radius: 10px;
+  background-color: #fff;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 600px;
+}
+
+.optionImage{
+  cursor:pointer;
+  padding: 20px 10px;
+  margin:0px 30px;
+
+}
+
+.takePicStack{
+  padding: 25px;
+  border-radius: 10px;
+  background-color: #fff;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+}
+
+.uploadPicStack{
+    padding: 25px;
+  border-radius: 10px;
+  background-color: #fff;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.uploadPicBox{
+max-width: 600px;
+max-height: 800px;
+display:flex;
+justify-content: center;
+}
+
+.adminPageBox{
+  position: relative !important;
+  width:250px;
+  height: 300px;
+}
+
+.imageModify{
+  position: absolute !important;
+  bottom: 15px;
+  right: 15%;
+  margin-inline: auto;
+  width: 70%;
+  cursor: pointer;
+}
+
+.imageModify:hover{
+  box-shadow: #a7a5a5 1px 2px 5px;
+}
+
+.imageDelete:hover{
+  border-radius: 20px;
+  
+}
+
+
+.imageDelete{
+  position: absolute !important;
+  top:0;
+  right: 0;
+  margin-inline: auto;
+  width: 70%;
+  cursor: pointer;
+  width: fit-content;
+}
+
+
+.backdrop{
+  position:absolute;
+  top:0;
+  left:0;
+  width:250px;
+  max-width: 500px;
+  height:300px;
+  max-height: 100%;
+  overflow-y: hidden;
+  background-color:rgba(0,0,0,0.4);
+  border-radius: 20px;
+}
+
+.adminPageImage{
+  border-radius: 20px;
+  width: 250px;
+  height: 300px;
+  /* height: fit-ontent; */
+  max-width: 500px;
+  max-height: 400px;
+  object-fit: cover;
+}
+
+.buttonBox{
+  border-radius: 10px;
+  background-color: rgb(0, 0, 0);
+  padding:5px;
+}
+
+.buttonBox:hover{
+  box-shadow: #a7a5a5 1px 2px 5px;
+}

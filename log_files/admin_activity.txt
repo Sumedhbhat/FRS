@@ -1,0 +1,42 @@
+This file keeps track of successful and unsuccessful admin login attempts and operations performed by the admin.
+
+7/7/2022, 11:31:55 am	Username: sumedh              	Admin Login successful.
+7/7/2022, 11:44:23 am	Username: sumedh              	Image with new user_id: 81afe305-df63-499b-8f66-ec3a0df742a1 input by the admin.
+7/7/2022, 11:44:39 am	Username: sumedh              	Image with too little face area input by the admin.
+7/7/2022, 11:48:34 am	Username: sumedh              	Image with too little face area input by the admin.
+7/7/2022, 11:48:39 am	Username: sumedh              	Admin deleted user with user_id: 28e7200f-1279-4e85-9939-fe821d295285.
+7/7/2022, 11:50:56 am	Username: sumedh              	Image with too little face area input by the admin.
+7/7/2022, 11:51:09 am	Username: sumedh              	Image with new user_id: 080819b4-f322-4b7c-954c-d79772426b04 input by the admin.
+7/7/2022, 11:51:27 am	Username: sumedh              	Admin created user with user_id: 080819b4-f322-4b7c-954c-d79772426b04.
+7/7/2022, 11:53:16 am	Username: sumedh              	Image with multiple faces input by the admin.
+7/7/2022, 11:54:43 am	Username: sumedh              	Image with new user_id: 27dde3a5-0e44-49b1-aa50-ac0fe0adb48e input by the admin.
+7/7/2022, 12:00:52 pm	Username: sumedh              	Image with new user_id: c89ea5d1-5196-4b14-b4cf-128f2e547583 input by the admin.
+7/7/2022, 12:16:32 pm	Username: sumedh              	Image with new user_id: de5cbd5d-081f-49a2-b5e2-5452df8ff737 input by the admin.
+7/7/2022, 12:20:35 pm	Username: sumedh              	Image with new user_id: c89ea5d1-5196-4b14-b4cf-128f2e547583 input by the admin.
+7/7/2022, 12:22:33 pm	Username: sumedh              	Image with new user_id: b1f25747-3600-4db4-acff-aed02b2e126e input by the admin.
+7/7/2022, 12:25:14 pm	Username: sumedh              	Image with new user_id: 61b16d36-8b23-4697-b6cd-681cd02bae77 input by the admin.
+7/7/2022, 12:27:21 pm	Username: sumedh              	Admin Login successful.
+7/7/2022, 12:27:42 pm	Username: sumedh              	Image with new user_id: dc871aa5-ad8d-4ae9-8e50-9371fc9725e1 input by the admin.
+7/7/2022, 2:01:43 pm	Username: sumedh              	Image with new user_id: dc871aa5-ad8d-4ae9-8e50-9371fc9725e1 input by the admin.
+7/7/2022, 2:01:57 pm	Username: sumedh              	Image with new user_id: eb088459-26fb-45cf-94ea-3e064308af82 input by the admin.
+7/7/2022, 2:03:32 pm	Username: sumedh              	Image with new user_id: 0986e8a7-cba7-46a2-ad20-da44f2dce631 input by the admin.
+7/7/2022, 2:04:48 pm	Username: sumedh              	Image with new user_id: f47d2d88-19d1-4dd4-8c07-866812324996 input by the admin.
+7/7/2022, 2:05:57 pm	Username: sumedh              	Image with new user_id: a8afe789-7ddf-45f7-8468-04f5dbee5ab5 input by the admin.
+7/7/2022, 2:07:22 pm	Username: sumedh              	Image with new user_id: 5cb97a5c-9618-4229-95e0-ba8807aff7ce input by the admin.
+7/7/2022, 2:10:58 pm	Username: sumedh              	Image with new user_id: cba4de6d-4741-405f-b7fc-4940c8777315 input by the admin.
+7/7/2022, 2:11:21 pm	Username: sumedh              	Admin created user with user_id: cba4de6d-4741-405f-b7fc-4940c8777315.
+7/7/2022, 2:40:31 pm	Username: sumedh              	Image with existing user_id: 080819b4-f322-4b7c-954c-d79772426b04 input by the admin.
+7/7/2022, 2:41:23 pm	Username: sumedh              	Image with existing user_id: 080819b4-f322-4b7c-954c-d79772426b04 input by the admin.
+7/7/2022, 2:42:09 pm	Username: sumedh              	Image with existing user_id: 080819b4-f322-4b7c-954c-d79772426b04 input by the admin.
+7/7/2022, 2:44:40 pm	Username: sumedh              	Image with existing user_id: 080819b4-f322-4b7c-954c-d79772426b04 input by the admin.
+7/7/2022, 2:45:39 pm	Username: sumedh              	Image with existing user_id: 080819b4-f322-4b7c-954c-d79772426b04 input by the admin.
+7/7/2022, 2:46:54 pm	Username: sumedh              	Image with existing user_id: 080819b4-f322-4b7c-954c-d79772426b04 input by the admin.
+7/7/2022, 2:48:07 pm	Username: sumedh              	Image with existing user_id: 080819b4-f322-4b7c-954c-d79772426b04 input by the admin.
+7/7/2022, 4:13:21 pm	Username: sumedh              	Admin Login successful.
+7/7/2022, 4:13:34 pm	Username: sumedh              	Image with no face input by the admin.
+7/7/2022, 4:17:50 pm	Username: sumedh              	Image with no face input by the admin.
+7/7/2022, 4:42:31 pm	Username: sumedh              	Admin Login successful.
+7/7/2022, 4:42:51 pm	Username: sumedh              	Image with existing user_id: 080819b4-f322-4b7c-954c-d79772426b04 input by the admin.
+7/7/2022, 4:44:50 pm	Username: sumedh              	Image with too little face area input by the admin.
+7/7/2022, 4:45:52 pm	Username: sumedh              	Image with too little face area input by the admin.
+7/7/2022, 4:45:58 pm	Username: sumedh              	Image with existing user_id: 080819b4-f322-4b7c-954c-d79772426b04 input by the admin.
