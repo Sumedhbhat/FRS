@@ -29,7 +29,7 @@ CREATE TABLE `FRS`.`user` (
   `city` VARCHAR(45) NOT NULL,
   `department` VARCHAR(45) NOT NULL,
   `captured_count` INT NOT NULL DEFAULT 0,
-  `date_created` DATE NOT NULL DEFAULT (CURRENT_DATE()),
+  `date_created` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
   `last_modified_by` VARCHAR(20) NOT NULL,
   PRIMARY KEY (`user_id`));
   
