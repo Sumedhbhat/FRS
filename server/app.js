@@ -2,8 +2,7 @@ const express = require("express");
 const fileupload = require("express-fileupload");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-
-
+const path= require("path");
 const app = express();
 const port = 3007;
 
@@ -17,7 +16,7 @@ app.use(
     origin: "*",
   })
 );
-
+app.use(express.static(path.join(__dirname,"..","client","build")))
 const admin = require("./routes/admin");
 const user = require("./routes/user")
 

@@ -1,1 +1,3 @@
 This file keeps track of images captured from the user's end and the access management.
+
+7/7/2022, 7:59:20 PM	User_id: 46547b1d-5146-4420-9083-5da5da10af8a     	Spectator was granted passage through the facial recognition system.
