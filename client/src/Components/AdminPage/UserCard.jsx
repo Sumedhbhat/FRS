@@ -76,11 +76,6 @@ const UserCard = ({ user, setClick }) => {
         md={4}
         lg={2.5}
         key={user}
-        component={motion.div}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        whileTap={{ scale: 0.9 }}
         sx={{ mx: "auto", display: "flex" }}
         justifyContent='center'
       >
