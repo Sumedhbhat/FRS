@@ -108,3 +108,33 @@ This file keeps track of successful and unsuccessful admin login attempts and op
 7/7/2022, 9:18:14 PM	Username: sumedh              	Admin Login successful.
 7/7/2022, 9:21:35 PM	Username: sumedh              	Admin Login successful.
 7/7/2022, 9:24:48 PM	Username: sumedh              	Admin Login successful.
+7/7/2022, 9:03:03 pm	Username: sumedh              	Admin Login attempted with incorrect password: something.
+7/7/2022, 9:03:26 pm	Username: sumedh              	Admin Login attempted with incorrect password: something.
+7/7/2022, 9:03:27 pm	Username: sumedh              	Admin Login attempted with incorrect password: s.
+7/7/2022, 9:03:28 pm	Username: sumedh              	Admin Login attempted with incorrect password: su.
+7/7/2022, 9:03:28 pm	Username: sumedh              	Admin Login attempted with incorrect password: sud.
+7/7/2022, 9:03:28 pm	Username: sumedh              	Admin Login attempted with incorrect password: sudu.
+7/7/2022, 9:03:28 pm	Username: sumedh              	Admin Login attempted with incorrect password: sudu_.
+7/7/2022, 9:03:29 pm	Username: sumedh              	Admin Login attempted with incorrect password: sudu_1.
+7/7/2022, 9:03:29 pm	Username: sumedh              	Admin Login attempted with incorrect password: sudu_10.
+7/7/2022, 9:03:29 pm	Username: sumedh              	Admin Login attempted with incorrect password: sudu_100.
+7/7/2022, 9:03:29 pm	Username: sumedh              	Admin Login successful.
+7/7/2022, 9:04:41 pm	Username: sumedh              	Admin Login attempted with incorrect password: something.
+7/7/2022, 9:04:48 pm	Username:                    	Admin Login attempted with incorrect username: sumedh1.
+7/7/2022, 9:05:26 pm	Username:                    	Admin Login attempted with incorrect username: sumedh1.
+7/7/2022, 9:05:52 pm	Username:                    	Admin Login attempted with incorrect username: sumedh1.
+7/7/2022, 9:06:03 pm	Username:                    	Admin Login attempted with incorrect username: sumedh1.
+7/7/2022, 9:06:12 pm	Username:                    	Admin Login attempted with incorrect username: sumedh1.
+7/7/2022, 9:06:17 pm	Username:                    	Admin Login attempted with incorrect username: sumedh1.
+7/7/2022, 9:06:32 pm	Username:                    	Admin Login attempted with incorrect username: sumedh1.
+7/7/2022, 9:06:37 pm	Username:                    	Admin Login attempted with incorrect username: sumedh1.
+7/7/2022, 9:06:50 pm	Username: sumedh              	Admin Login attempted with incorrect password: SOMETIHNELSE.
+7/7/2022, 9:07:08 pm	Username: sumedh              	Admin Login attempted with incorrect password: sometihng.
+7/7/2022, 9:07:14 pm	Username:                    	Admin Login attempted with incorrect username: sumedh1.
+7/7/2022, 9:07:22 pm	Username: sumedh              	Admin Login successful.
+7/7/2022, 9:29:03 pm	Username: sumedh              	Admin Login successful.
+7/7/2022, 9:29:14 pm	Username: sumedh              	Image with existing user_id: b6c23b87-bbc0-45f1-8dde-eb755dd083f0 input by the admin.
+7/7/2022, 9:29:34 pm	Username: sumedh              	Image with existing user_id: b6c23b87-bbc0-45f1-8dde-eb755dd083f0 input by the admin.
+7/7/2022, 9:30:03 pm	Username: sumedh              	Image with new user_id: 23e0e0be-e4dc-4976-b53a-ce6eb04d29bb input by the admin.
+7/7/2022, 9:30:21 pm	Username: sumedh              	Admin created user with user_id: 23e0e0be-e4dc-4976-b53a-ce6eb04d29bb.
+

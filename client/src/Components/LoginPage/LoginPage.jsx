@@ -40,24 +40,28 @@ const LoginPage = () => {
   useEffect(() => {
     if (errors) {
       if (!errors.username && !errors.password) {
+        console.log(errors);
         console.log("In login useEffect");
         dispatch(adminLogin(values));
       }
     }
-  }, [values, errors]);
+  }, [errors]);
 
   const handlePassword = () => {
     setPassword((prev) => !prev);
   };
 
   const handleSubmit = () => {
-    setErrors({});
+    setErrors(null);
+    const er = {};
     if (validator.isEmpty(values.username)) {
-      setErrors((prev) => ({ ...prev, username: "Invalid email" }));
+      setErrors((prev) => ({ ...prev }));
+      er = { ...er, username: "Invalid email" };
     }
     if (validator.isEmpty(values.password)) {
-      setErrors((prev) => ({ ...prev, password: "Password is required" }));
+      er = { ...er, password: "Invalid password" };
     }
+    setErrors(er);
   };
 
   return (

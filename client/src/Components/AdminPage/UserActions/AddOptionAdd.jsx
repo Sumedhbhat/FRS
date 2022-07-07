@@ -37,22 +37,26 @@ const AddOptionAdd = ({
             <Typography variant='h4' align='center'>
               Upload image
             </Typography>
-            <Grid container>
-              <Grid item xs={6}>
+            <Grid
+              container
+              flexDirection={["column", "column", "row"]}
+              justifyContent='center'
+            >
+              <Grid item xs={6} mx='auto'>
                 <Stack
-                  className={"optionImage"}
+                  className='optionImage'
                   onClick={() => {
                     setOptionAdd(false);
                     setTakePic(true);
                   }}
                 >
-                  <img style={{ padding: "20px 40px " }} src={camera} alt='' />
+                  <img style={{ padding: "10px 30px" }} src={camera} alt='' />
                   <Typography variant='h5' component='b' align='center'>
                     Take a photo
                   </Typography>
                 </Stack>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={6} mx='auto'>
                 <Stack
                   className='optionImage'
                   onClick={() => {
