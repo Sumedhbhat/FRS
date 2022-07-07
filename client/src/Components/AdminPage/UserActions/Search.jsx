@@ -163,7 +163,7 @@ const Search = () => {
           className=''
           variant='outlined'
           sx={{
-            display: [click ? "flex" : "none", click ? "flex" : "none", "none"],
+            display: [click ? "none" : "flex", click ? "none" : "flex", "none"],
             justifyContent: "center",
             alignItems: "center",
           }}
