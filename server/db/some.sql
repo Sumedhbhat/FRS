@@ -62,7 +62,7 @@ CREATE TABLE `FRS`.`user_capture_log` (
 
 /* Trigger for creating log on insert user */
 DELIMITER $$
-CREATE TRIGGER `create_log_on_insert` AFTER INSERT ON `user` FOR EACH ROW BEGIN
+CREATE DEFINER=`root`@`localhost` TRIGGER `create_log_on_insert` AFTER INSERT ON `user` FOR EACH ROW BEGIN
 	INSERT INTO `admin_log` (`change_by`, `change_on`, `change_type`)
     VALUE (NEW.`last_modified_by`, NEW.`user_id`, "INSERT");
     INSERT INTO `user_change_log` (`change_by`, `change_type`, `user_id`, `base_img`, `img_ext`, `name`, `mob_no`, `gender`, `city`, `department`, `date_created`) 
@@ -72,7 +72,7 @@ DELIMITER ;
 
 /* Trigger for creating log on update user */
 DELIMITER $$
-CREATE TRIGGER `create_log_on_update` AFTER UPDATE ON `user` FOR EACH ROW BEGIN
+CREATE DEFINER=`root`@`localhost` TRIGGER `create_log_on_update` AFTER UPDATE ON `user` FOR EACH ROW BEGIN
     IF (NEW.`base_img` != OLD.`base_img` OR NEW.`name` != OLD.`name` OR NEW.`mob_no` != OLD.`mob_no` OR NEW.`gender` != OLD.`gender` OR NEW.`city` != OLD.`city` OR NEW.`department` != OLD.`department`) THEN
         INSERT INTO `admin_log` (`change_by`, `change_on`, `change_type`)
 		VALUE (NEW.`last_modified_by`, NEW.`user_id`, "UPDATE");
@@ -94,7 +94,11 @@ END$$
 DELIMITER ;
 
 /* Get user view */
-CREATE VIEW `FRS`.`get_user` AS
+CREATE 
+    ALGORITHM = UNDEFINED 
+    DEFINER = `root`@`localhost` 
+    SQL SECURITY DEFINER
+VIEW `FRS`.`get_user` AS
     SELECT 
 		`FRS`.`user`.`user_id` AS `user_id`,
         `FRS`.`user`.`base_img` AS `base_img`,
@@ -109,7 +113,7 @@ CREATE VIEW `FRS`.`get_user` AS
 
 /* Delete user procedure */
 DELIMITER $$
-CREATE PROCEDURE `delete_user`(IN usr_id VARCHAR(36), IN last_modifier VARCHAR(20))
+CREATE DEFINER=`root`@`localhost` PROCEDURE `delete_user`(IN usr_id VARCHAR(36), IN last_modifier VARCHAR(20))
 BEGIN
 	UPDATE `user` SET `last_modified_by` = last_modifier WHERE `user_id` = usr_id;
 	SELECT `base_img` FROM `user` WHERE `user_id` = usr_id;
@@ -136,7 +140,3 @@ BEGIN
     END IF;
 END$$
 DELIMITER ;
-
-/* Inserting dummy admin values */
-INSERT INTO `FRS`.`admin` (`username`, `password`) VALUES ('vedansh', 'password');
-INSERT INTO `FRS`.`admin` (`username`, `password`) VALUES ('sumedh', 'sudu_1000');
