@@ -67,13 +67,12 @@ const LoginPage = () => {
         justifyContent: "center",
         alignItems: "center",
         flexDirection: "column",
-        spacing: 3,
       }}
     >
       <Typography variant='h3' align='center' component='b' sx={{ mt: 3 }}>
         Login
       </Typography>
-      <Box sx={{ width: "600px", mt: 3 }}>
+      <Box sx={{ width: ["80%", "70%", "600px"], mt: 3 }}>
         <TextField
           value={values.username}
           onChange={(e) =>
@@ -86,7 +85,7 @@ const LoginPage = () => {
           variant='outlined'
         />
       </Box>
-      <Box sx={{ width: "600px", mt: 3 }}>
+      <Box sx={{ width: ["80%", "70%", "600px"], mt: 3 }}>
         <TextField
           value={values.password}
           type={password ? "password" : "text"}
@@ -111,10 +110,15 @@ const LoginPage = () => {
           variant='outlined'
         />
       </Box>
+      {loginError && (
+        <Typography mt={3} variant='h6' align='center'>
+          {loginError}
+        </Typography>
+      )}
       <Button
         variant='contained'
         size='large'
-        sx={{ mt: 3 }}
+        sx={{ mt: 3, width: ["80%", "70%", "600px"] }}
         onClick={handleSubmit}
       >
         Login

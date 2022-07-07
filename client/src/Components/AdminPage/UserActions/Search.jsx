@@ -27,7 +27,7 @@ const Search = () => {
   const [department, setDepartment] = useState([]);
   const [gender, setGender] = useState([""]);
   const [date, setDate] = useState([null, "after"]);
-  const [click, setClick] = useState(false);
+  const [click, setClick] = useState(true);
 
   const handleSubmit = () => {
     console.log(city.length);
