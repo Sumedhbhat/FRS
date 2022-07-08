@@ -26,3 +26,4 @@ server/utils/.DS_Store
 
 log_files/*
 server/face_encodings/face_encodings.json
+server/db/dbconnect.js
