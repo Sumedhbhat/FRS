@@ -1,18 +1,1 @@
 This file keeps track of changes made to user data in the system.
-
-7/7/2022, 11:48:39 am	User_id: 28e7200f-1279-4e85-9939-fe821d295285	User deleted.
-7/7/2022, 11:51:27 am	User_id: 080819b4-f322-4b7c-954c-d79772426b04	User created.
-7/7/2022, 2:11:21 pm	User_id: cba4de6d-4741-405f-b7fc-4940c8777315	User created.
-7/7/2022, 6:41:21 pm	User_id: 855366a5-05dc-4a32-9286-e4f26aaf87b3	User created.
-7/7/2022, 6:44:14 pm	User_id: 855366a5-05dc-4a32-9286-e4f26aaf87b3	User deleted.
-7/7/2022, 7:48:05 PM	User_id: b6c23b87-bbc0-45f1-8dde-eb755dd083f0	User created.
-7/7/2022, 7:51:02 PM	User_id: ec28343e-3ba7-444a-9bbf-29e43adb0391	User created.
-7/7/2022, 7:54:11 PM	User_id: 00f47ecc-501a-40fe-89ba-f025d4972866	User created.
-7/7/2022, 7:55:34 PM	User_id: b6c23b87-bbc0-45f1-8dde-eb755dd083f0	User details updated.
-7/7/2022, 7:57:14 PM	User_id: ec28343e-3ba7-444a-9bbf-29e43adb0391	User deleted.
-7/7/2022, 7:59:08 PM	User_id: 46547b1d-5146-4420-9083-5da5da10af8a	User created.
-7/7/2022, 8:01:20 PM	User_id: 00f47ecc-501a-40fe-89ba-f025d4972866	User deleted.
-7/7/2022, 8:13:48 pm	User_id: 16857839-7ecd-4acf-be5e-d3d155716760	User created.
-7/7/2022, 8:26:06 PM	User_id: b6c23b87-bbc0-45f1-8dde-eb755dd083f0	User details updated.
-
-7/7/2022, 9:30:21 pm	User_id: 23e0e0be-e4dc-4976-b53a-ce6eb04d29bb	User created.
