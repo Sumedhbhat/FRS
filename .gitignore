@@ -9,7 +9,6 @@ user_images/deletes/*
 !user_images/deletes/.gitkeep
 
 server/node_modules
-server/db/dbconnect.js
 .DS_Store
 user_images/.DS_Store
 user_images/captures/.DS_Store
@@ -23,7 +22,3 @@ server/face_encodings/.DS_Store
 server/pyscripts/.DS_Store
 server/routes/.DS_Store
 server/utils/.DS_Store
-
-log_files/*
-server/face_encodings/face_encodings.json
-server/db/dbconnect.js
