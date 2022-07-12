@@ -12,13 +12,12 @@ import { getUsers } from "./Redux/functions/userFunctions";
 const App = () => {
   const dispatch = useDispatch();
   const count = useSelector((state) => state.user.count);
-
+  const basename = process.env.REACT_APP_BASENAME || null;
   useEffect(() => {
-    console.log("inside get users");
     dispatch(getUsers());
   }, [count]);
   return (
-    <Router>
+    <Router basename={basename}>
       <Routes>
         <Route path='/' element={<Home />} />
         {/* <Route path='/result' element={<ResultPage />} /> */}
