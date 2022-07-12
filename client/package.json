@@ -1,8 +1,8 @@
 {
   "name": "client",
   "version": "0.1.0",
-  "private": true,
   "homepage": ".",
+  "private": true,
   "dependencies": {
     "@date-io/moment": "^2.14.0",
     "@emotion/react": "^11.9.0",
@@ -29,7 +29,6 @@
     "react-webcam": "^7.0.1",
     "redux": "^4.2.0",
     "redux-thunk": "^2.4.1",
-    "uploads": "file:../uploads",
     "validator": "^13.7.0",
     "web-vitals": "^2.1.4"
   },
