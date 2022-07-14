@@ -2,7 +2,7 @@ import face_recognition as fr
 import numpy as np
 import json
 import sys
-import cv2
+# import cv2
 import os
 
 imgloc = str(sys.argv[1])
@@ -17,7 +17,7 @@ with open(config_file, 'r') as f:
 
 threshold = configs['threshold']
 training_model = configs["model_1"]
-face_ratio = configs["face_ratio"]
+# face_ratio = configs["face_ratio"]
 fe_file_loc = configs["fe_file_loc"]
 
 fe_file = os.path.join(frs_folder, fe_file_loc)
@@ -27,17 +27,17 @@ output = {}
 given_image = fr.load_image_file(imgloc)
 face_locations = fr.face_locations(given_image, model=training_model)
 
-im = cv2.imread(imgloc)
-h, w, _ = im.shape
+# im = cv2.imread(imgloc)
+# h, w, _ = im.shape
 
-t, r, b, l = face_locations[0]
+# t, r, b, l = face_locations[0]
 
 if len(face_locations) == 0:
     output['errmsg'] = 'no face'
 elif len(face_locations) > 1:
     output['errmsg'] = 'multiple faces'
-elif ((r-l)/w < face_ratio) and ((b-t)/h < face_ratio) and ((r - l) * (b - t) / (h * w) < face_ratio):
-    output['errmsg'] = 'too little face area'
+# elif ((r-l)/w < face_ratio) and ((b-t)/h < face_ratio) and ((r - l) * (b - t) / (h * w) < face_ratio):
+#     output['errmsg'] = 'too little face area'
 else:
     with open(fe_file, 'r') as f:
         face_emb = json.load(f)
