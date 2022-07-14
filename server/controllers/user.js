@@ -38,37 +38,47 @@ const recognizeUser = async (req, res) => {
     const base64str = base64img.substring(base64img.indexOf(",")+1);
     fs.writeFileSync(imgpath, base64str, "base64");
 
-    const process = spawnSync("python3", [recface, imgpath, fe_file, "user"]);
-    const finalResult = JSON.parse(String(process.stdout).replace(/'/g, '"'));
+    var pyres = 0;
 
-    if(finalResult.msg === "no face found" || finalResult.msg === "multiple faces found") {
-        // fs.unlinkSync(imgpath);
-        return res.status(211).json({msg: finalResult.msg});
+    const process = spawnSync("python3", [recface, imgpath]);
+    try {
+      pyres = JSON.parse(String(process.stdout).replace(/'/g, '"'));    
     }
-    else if(finalResult.msg === "existing user") {
-        img = finalResult.user_id + extension;
-        db.promise().query("CALL record_user_capture(?,?,?)", [img, finalResult.user_id, in_out_status])
+    catch(e) {
+      console.log(e);
+      return res.status(400).json({msg:"something went wrong with python script"});
+    }
+  
+    const {errmsg, msg, usr_id} = pyres;
+
+    if(errmsg) {
+        // fs.unlinkSync(imgpath);
+        return res.status(211).json({msg: errmsg});
+    }
+    else if(msg === "existing user") {
+        img = usr_id + extension;
+        db.promise().query("CALL record_user_capture(?,?,?)", [img, usr_id, in_out_status])
         .then((result) => {
             fs.renameSync(imgpath, path.join(capturesFolder, result[0][0][0]["@img_name"]))
             var user_name = result[0][0][0]["@user_name"];
-            clog(finalResult.user_id, "recognized", result[0][0][0]["@user_name"]);
+            clog(usr_id, "recognized", result[0][0][0]["@user_name"]);
             if(in_out_status == "IN") {
-                return res.status(211).json({msg: `Hello ${user_name}!`, user_id: finalResult.user_id});
+                return res.status(211).json({msg: `Hello ${user_name}!`, user_id: usr_id});
             }
             else {
-                return res.status(211).json({msg: `Bye ${user_name}`, user_id: finalResult.user_id});
+                return res.status(211).json({msg: `Bye ${user_name}`, user_id: usr_id});
             }
         })
         .catch((err) => {
             console.log(err);
-            res.status(500).json({ msg: err.sqlMessage });
+            res.status(400).json({ msg: err.sqlMessage });
         });
     }
     else {
         db.promise().query("CALL record_user_capture(?,?,?)", [img, "unrecognized", in_out_status])
         .catch((err) => {
             console.log(err);
-            res.status(500).json({ msg: err.sqlMessage });
+            res.status(400).json({ msg: err.sqlMessage });
         });
         clog(img, "unrecognized");
         return res.status(211).json({msg: "User Not Recognized"});
