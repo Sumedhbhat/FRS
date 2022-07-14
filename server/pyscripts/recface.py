@@ -18,6 +18,8 @@ imgloc = str(sys.argv[1])
 fe_file = str(sys.argv[2])
 use_case = str(sys.argv[3])
 
+print("1")
+
 output = {'msg': ''}
 
 given_image = fr.load_image_file(imgloc)
@@ -34,16 +36,23 @@ elif len(face_locations) > 1:
     print(output)
     sys.exit()
 
+print("2")
+
 t, r, b, l = face_locations[0]
 h, w, c = im.shape
 
 if (use_case != "user") and ((r-l)/w < face_ratio) and ((b-t)/h < face_ratio) and ((r - l) * (b - t) / (h * w) < face_ratio):
     output['msg'] = 'reduce distance between face and camera'
+    print("2.5")
     print(output)
     sys.exit()
 
+print("3")
+
 with open(fe_file, 'r') as f:
     face_emb = json.load(f)
+
+print("3")
 
 known_faces = list(face_emb.keys())
 known_face_encodings = list(face_emb.values())
@@ -59,5 +68,7 @@ if(face_distances[best_match] < threshold):
 else:
     output['msg'] = 'new user'
     output['face_encoding'] = face_encoding[0].tolist()
+
+print("4")
 
 print(output)

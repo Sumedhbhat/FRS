@@ -93,6 +93,7 @@ const recognizeFace = async (req, res) => {
   }
 
   const process = spawnSync("python3", [recface, imgpath, fe_file, "admin"]);
+console.log(String(process.stdout));
   const finalResult = JSON.parse(String(process.stdout).replace(/'/g, '"'));
 
   if (

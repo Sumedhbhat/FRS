@@ -1,1 +1,13 @@
 This file keeps track of successful and unsuccessful admin login attempts and operations performed by the admin.
+
+7/13/2022, 7:00:10 PM	Username: sumedh              	Admin Login attempted with incorrect password: something.
+7/13/2022, 7:00:20 PM	Username: sumedh              	Admin Login successful.
+7/13/2022, 7:02:07 PM	Username: sumedh              	Image with new user_id: 3b5d22f0-c5b3-4fec-b99e-0fc4af7044a8 input by the admin.
+7/13/2022, 7:02:28 PM	Username: sumedh              	Admin created user with user_id: 3b5d22f0-c5b3-4fec-b99e-0fc4af7044a8.
+7/13/2022, 7:05:21 PM	Username: sumedh              	Admin Login successful.
+7/13/2022, 7:19:45 PM	Username: sumedh              	Admin Login successful.
+7/13/2022, 7:23:44 PM	Username: sumedh              	Image with existing user_id: 3b5d22f0-c5b3-4fec-b99e-0fc4af7044a8 input by the admin.
+7/13/2022, 7:26:15 PM	Username: sumedh              	Admin Login successful.
+7/13/2022, 8:38:27 PM	Username: sumedh              	Admin Login successful.
+7/13/2022, 8:53:23 PM	Username: sumedh              	Admin Login successful.
+7/13/2022, 8:53:35 PM	Username: sumedh              	Admin Login successful.

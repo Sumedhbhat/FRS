@@ -1,1 +1,3 @@
 This file keeps track of changes made to user data in the system.
+
+7/13/2022, 7:02:28 PM	User_id: 3b5d22f0-c5b3-4fec-b99e-0fc4af7044a8	User created.
