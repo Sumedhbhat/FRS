@@ -92,53 +92,28 @@ const recognizeFace = async (req, res) => {
     fs.writeFileSync(imgpath, req.files.base_img.data);
   }
 
-  const process = spawnSync("python3", [recface, imgpath, fe_file, "admin"]);
-console.log(String(process.stdout));
-  const finalResult = JSON.parse(String(process.stdout).replace(/'/g, '"'));
+  var pyres = 0;
 
-  if (
-    finalResult.msg === "no face found" ||
-    finalResult.msg === "multiple faces found"
-  ) {
-    alog(
-      admin,
-      `Image with ${finalResult.msg.substring(
-        0,
-        finalResult.msg.lastIndexOf(" ")
-      )} input by the admin`
-    );
+  const process = spawnSync("python3", [recface, imgpath, "admin"]);
+  try {
+    pyres = JSON.parse(String(process.stdout).replace(/'/g, '"'));    
+  }
+  catch(e) {
+    console.log(e);
+    return res.status(400).json({msg:"something went wrong with python script"});
+  }
+
+  const {errmsg, msg, usr_id, face_encoding} = pyres;
+
+  if(errmsg) {
+    alog(admin, `Image with ${errmsg} input by the admin`);
     fs.unlinkSync(imgpath);
-    return res
-      .status(216)
-      .json({ msg: finalResult.msg, user_id: "", extension: "" });
-  } else if (finalResult.msg === "reduce distance between face and camera") {
-    alog(admin, `Image with too little face area input by the admin`);
-    fs.unlinkSync(imgpath);
-    return res
-      .status(216)
-      .json({ msg: finalResult.msg, user_id: "", extension: "" });
-  } else if (
-    finalResult.msg === "existing user" &&
-    finalResult.user_id !== user_id
-  ) {
-    fs.unlinkSync(imgpath);
-    alog(
-      admin,
-      `Image with existing user_id: ${finalResult.user_id} input by the admin`
-    );
-    return res.status(200).json({
-      msg: finalResult.msg,
-      user_id: finalResult.user_id,
-      extension: "",
-    });
-  } else {
-    alog(admin, `Image with new user_id: ${user_id} input by the admin`);
-    return res.status(211).json({
-      msg: finalResult.msg,
-      user_id: user_id,
-      extension: extension,
-      face_encoding: finalResult.face_encoding,
-    });
+    return res.status(216).json({msg: errmsg});
+  }
+  else {
+    alog(admin, `Image with ${msg.substring(0, msg.indexOf(" "))} user_id: ${usr_id} input by the admin`);
+    var sts = msg === "existing user" ? 200 : 211;
+    return res.status(sts).json({msg: msg, user_id: usr_id, extension: extension, face_encoding: face_encoding})
   }
 };
 

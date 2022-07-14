@@ -5,7 +5,13 @@ import sys
 import cv2
 import os
 
-config_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), "config.json")
+imgloc = str(sys.argv[1])
+user = str(sys.argv[2])
+userid = imgloc[imgloc.rindex("/")+1: imgloc.rindex(".")]
+
+frs_folder = os.path.abspath(os.path.join(__file__ ,os.pardir, os.pardir, os.pardir))
+
+config_file = os.path.join(frs_folder, "server/pyscripts/config.json")
 
 with open(config_file, 'r') as f:
     configs = json.load(f)
@@ -13,62 +19,44 @@ with open(config_file, 'r') as f:
 threshold = configs['threshold']
 training_model = configs["model_1"]
 face_ratio = configs["face_ratio"]
+fe_file_loc = configs["fe_file_loc"]
 
-imgloc = str(sys.argv[1])
-fe_file = str(sys.argv[2])
-use_case = str(sys.argv[3])
+fe_file = os.path.join(frs_folder, fe_file_loc)
 
-print("1")
-
-output = {'msg': ''}
+output = {}
 
 given_image = fr.load_image_file(imgloc)
 face_locations = fr.face_locations(given_image, model=training_model)
 
 im = cv2.imread(imgloc)
-
-if len(face_locations) == 0:
-    output['msg'] = 'no face found'
-    print(output)
-    sys.exit()
-elif len(face_locations) > 1:
-    output['msg'] = 'multiple faces found'
-    print(output)
-    sys.exit()
-
-print("2")
+h, w, _ = im.shape
 
 t, r, b, l = face_locations[0]
-h, w, c = im.shape
 
-if (use_case != "user") and ((r-l)/w < face_ratio) and ((b-t)/h < face_ratio) and ((r - l) * (b - t) / (h * w) < face_ratio):
-    output['msg'] = 'reduce distance between face and camera'
-    print("2.5")
-    print(output)
-    sys.exit()
-
-print("3")
-
-with open(fe_file, 'r') as f:
-    face_emb = json.load(f)
-
-print("3")
-
-known_faces = list(face_emb.keys())
-known_face_encodings = list(face_emb.values())
-
-face_encoding = fr.face_encodings(given_image, face_locations)
-face_distances = fr.face_distance(known_face_encodings, face_encoding[0])
-best_match = np.argmin(face_distances)
-
-if(face_distances[best_match] < threshold):
-    output['msg'] = 'existing user'
-    output['user_id'] = known_faces[best_match]
-    output['face_encoding'] = known_face_encodings[best_match]
+if len(face_locations) == 0:
+    output['errmsg'] = 'no face'
+elif len(face_locations) > 1:
+    output['errmsg'] = 'multiple faces'
+elif (user == "admin") and ((r-l)/w < face_ratio) and ((b-t)/h < face_ratio) and ((r - l) * (b - t) / (h * w) < face_ratio):
+    output['errmsg'] = 'too little face area'
 else:
-    output['msg'] = 'new user'
-    output['face_encoding'] = face_encoding[0].tolist()
+    with open(fe_file, 'r') as f:
+        face_emb = json.load(f)
+    
+    known_faces = list(face_emb.keys())
+    known_face_encodings = list(face_emb.values())
 
-print("4")
+    face_encoding = fr.face_encodings(given_image, face_locations)
+    face_distances = fr.face_distance(known_face_encodings, face_encoding[0])
+    best_match = np.argmin(face_distances)
+
+    if(face_distances[best_match] < threshold):
+        output['msg'] = 'existing user'
+        output['usr_id'] = known_faces[best_match]
+    else:
+        output['msg'] = 'new user'
+        output["usr_id"] = userid
+    
+    output['face_encoding'] = face_encoding[0].tolist()
 
 print(output)
