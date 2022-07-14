@@ -15,6 +15,8 @@ app.use(
     origin: "*",
   })
 );
+
+
 const admin = require("./routes/admin");
 const user = require("./routes/user");
 app.use("/api/admin",admin);
