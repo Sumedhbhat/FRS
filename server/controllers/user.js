@@ -14,7 +14,7 @@ const clog = require("../utils/captureLogger");
 
 const fe_file = path.join(__dirname, "..", "face_encodings", "face_encodings.json");
 const pyscripts = path.join(__dirname, "..", "pyscripts");
-const recface = path.join(pyscripts, "recface.py");
+const recface = path.join(pyscripts, "face_rec.py");
 
 const recognizeUser = async (req, res) => {
     var { base64img, in_out_status } = req.body;
@@ -40,7 +40,7 @@ const recognizeUser = async (req, res) => {
 
     var pyres = 0;
 
-    const process = spawnSync("python3", [recface, imgpath]);
+    const process = spawnSync("python3", [recface, imgpath, in_out_status]);
     try {
       pyres = JSON.parse(String(process.stdout).replace(/'/g, '"'));    
     }
@@ -48,6 +48,20 @@ const recognizeUser = async (req, res) => {
       console.log(e);
       return res.status(400).json({msg:"something went wrong with python script"});
     }
+
+    if(pyres.errmsg) {
+        return res.status(211).json({msg: pyres.errmsg});
+    }
+
+    pyres.user_id.forEach((user) => {
+        clog(user, "recognized");
+    });
+
+    if(!pyres.user_id[0]) {
+        clog(img, "unrecognized");
+    }
+
+    return res.status(211).json({users: pyres.user_id, imgpath: imgpath});
   
     const {errmsg, msg, usr_id} = pyres;
 

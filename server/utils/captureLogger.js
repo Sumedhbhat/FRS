@@ -7,7 +7,7 @@ function pad(str, len) {
     return (str+Array(len).join(" ")).substring(0, len);
 }
 
-function clog(id, rec_stat, name) {
+function clog(id, rec_stat) {
     if(rec_stat === "unrecognized") {
         var padded = pad(`Img_id:  ${id}`, 50);
         var datalog = `\n${new Date().toLocaleString()}\t${padded}\tDenied passage through the facial recognition system.`;
@@ -15,7 +15,7 @@ function clog(id, rec_stat, name) {
     }
     else {
         var padded = pad(`User_id: ${id}`, 50);
-        var datalog = `\n${new Date().toLocaleString()}\t${padded}\t${name} was granted passage through the facial recognition system.`;
+        var datalog = `\n${new Date().toLocaleString()}\t${padded} was granted passage through the facial recognition system.`;
         fs.appendFileSync(user_capture_file, datalog);
     }
 }
