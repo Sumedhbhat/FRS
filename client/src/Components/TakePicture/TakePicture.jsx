@@ -8,6 +8,9 @@ import {
   Box,
   CircularProgress,
   Typography,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -29,9 +32,9 @@ const TakePicture = () => {
   const imgSrc = useSelector((state) => state.recognize.image);
   const loading = useSelector((state) => state.recognize.loading);
   const error = useSelector((state) => state.recognize.error);
-  const userId = useSelector((state) => state.recognize.userId);
   const result = useSelector((state) => state.recognize.result);
-  const user = useSelector((state) => state.recognize.user);
+  const users = useSelector((state) => state.recognize.users);
+  const allUsers = useSelector((state) => state.recognize.allUsers);
 
   //Capturing Image
   const capture = useCallback(() => {
@@ -44,15 +47,9 @@ const TakePicture = () => {
 
   useEffect(() => {
     if (result) {
-      dispatch(getUser(userId));
+      dispatch(getUser(users));
     }
   }, [result]);
-  // useEffect(() => {
-  //   if (userId && result) {
-  //     navigate("/result/?userId=" + userId);
-  //     dispatch(reset());
-  //   }
-  // }, [userId, error, loading]);
 
   //Button functions
   const handleReset = () => {
@@ -99,20 +96,27 @@ const TakePicture = () => {
               <img src={imgSrc} className='takePictureImage' />
               {loading && <CircularProgress />}
               {error && <h1>{error}</h1>}
-              {result && user && !loading && (
-                <Box>
-                  <h1>Hello, {user && user.name}</h1>
-                  <h2>Department, {user.department}</h2>
-                  <h2>City, {user.city}</h2>
-                  <h2>
-                    Gender,{" "}
-                    {user.gender === "M"
-                      ? "Male"
-                      : user.gender === "F"
-                      ? "F"
-                      : "You have preferred not to say"}
-                  </h2>
-                </Box>
+              {result && users && !loading && allUsers && (
+                <Accordion>
+                  {allUsers.map((user) => (
+                    <>
+                      <AccordionSummary>{user.name}</AccordionSummary>
+                      <AccordionDetails>
+                        <h1>Hello, {user && user.name}</h1>
+                        <h2>Department, {user.department}</h2>
+                        <h2>City, {user.city}</h2>
+                        <h2>
+                          Gender,{" "}
+                          {user.gender === "M"
+                            ? "Male"
+                            : user.gender === "F"
+                            ? "F"
+                            : "You have preferred not to say"}
+                        </h2>
+                      </AccordionDetails>
+                    </>
+                  ))}
+                </Accordion>
               )}
               <Grid container columnGap={5} justifyContent='center'>
                 {!loading && (

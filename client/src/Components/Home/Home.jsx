@@ -3,6 +3,11 @@ import { Box, Grid, Typography, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 const Home = () => {
+  useEffect(() => {
+    console.log("Home");
+    console.log(process.env.REACT_APP_SERVER);
+  });
+
   const navigate = useNavigate();
   return (
     <>

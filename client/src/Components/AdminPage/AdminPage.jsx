@@ -38,9 +38,7 @@ const AdminPage = () => {
   var users = useSelector((state) => state.user.users);
   var error = useSelector((state) => state.user.error);
   var loading = useSelector((state) => state.user.loading);
-  console.log(error);
   var displayUser = useSelector((state) => state.user.displayUser);
-  console.log(users);
 
   //UseEffect
   useEffect(() => {
