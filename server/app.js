@@ -15,11 +15,11 @@ app.use(
     origin: "*",
   })
 );
-app.use(express.static(path.join(__dirname, "..", "client", "build")));
+// app.use(express.static(path.join(__dirname, "..", "client", "build")));
 
-app.use("/*", (req, res) => {
-  res.sendFile(path.join(__dirname, "..", "client", "build", "index.html"));
-});
+// app.use("/*", (req, res) => {
+//   res.sendFile(path.join(__dirname, "..", "client", "build", "index.html"));
+// });
 
 const admin = require("./routes/admin");
 const user = require("./routes/user");
