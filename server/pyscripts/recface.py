@@ -30,7 +30,8 @@ face_locations = fr.face_locations(given_image, model=training_model)
 im = cv2.imread(imgloc)
 h, w, _ = im.shape
 
-t, r, b, l = face_locations[0]
+if len(face_locations) != 0:
+    t, r, b, l = face_locations[0]
 
 if len(face_locations) == 0:
     output['errmsg'] = 'no face'
