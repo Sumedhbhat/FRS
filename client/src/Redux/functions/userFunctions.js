@@ -5,7 +5,7 @@ export const addUser = createAsyncThunk(
   "user/addUserStatus",
   async (user, { getState, rejectWithValue }) => {
     const data = await axios
-      .post(process.env.REACT_APP_SERVER+"/admin/users/create", {
+      .post(process.env.REACT_APP_SERVER + "/admin/users/create", {
         ...user,
         user_id: getState().image.user_id,
         last_modified_by: getState().admin.username,
@@ -36,7 +36,7 @@ export const getUsers = createAsyncThunk(
     const data = await axios
       .get(process.env.REACT_APP_SERVER + "/admin/dashboard")
       .then((res) => {
-        console.log(res);
+        console.log(res.data);
         if (res.status === 200) {
           return res.data;
         } else {

@@ -14,7 +14,7 @@ import { toast } from "react-toastify";
 import "./Admin.css";
 import { useDispatch, useSelector } from "react-redux";
 import { checkLogin, logOut } from "../../Redux/reducers/admin";
-import { MdDelete } from "react-icons/md";
+
 import { IoMdClose } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 import UserCard from "./UserCard";
@@ -88,7 +88,7 @@ const AdminPage = () => {
                 <Grid container gap={3} justifyContent='center'>
                   {!error.getUsers &&
                     !error.filterUsers &&
-                    users !== null &&
+                    users &&
                     users.map((user) => (
                       <UserCard
                         click={click}
