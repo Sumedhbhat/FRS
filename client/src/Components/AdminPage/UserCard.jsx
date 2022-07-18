@@ -15,7 +15,7 @@ import UploadPic from "./UserActions/UploadPic";
 import ImageCapture from "./UserActions/ImageCapture";
 import OptionAdd from "./UserActions/OptionAdd";
 
-const UserCard = ({ user, setClick }) => {
+const UserCard = ({ user, setClick, click }) => {
   const dispatch = useDispatch();
   const [modifyOptionAdd, setModifyOptionAdd] = useState(false);
   const [modify, setModify] = useState(false);
@@ -72,9 +72,10 @@ const UserCard = ({ user, setClick }) => {
       <Grid
         item
         xs={12}
-        sm={6}
-        md={4}
-        lg={2.5}
+        sm={5}
+        md={click ? 4 : 3}
+        lg={click ? 3 : 2.5}
+        xl={click ? 2.5 : 2}
         key={user}
         sx={{ mx: "auto", display: "flex" }}
         justifyContent='center'
