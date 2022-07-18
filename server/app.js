@@ -15,6 +15,7 @@ app.use(
     origin: "*",
   })
 );
+
 app.use(express.static(path.join(__dirname, "..", "client", "build")));
 
 app.use("/*", (req, res) => {
