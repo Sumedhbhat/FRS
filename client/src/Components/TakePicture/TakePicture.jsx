@@ -22,6 +22,7 @@ import {
   getUser,
 } from "../../Redux/reducers/recognizeReducer";
 import { AnimatePresence, motion } from "framer-motion";
+import { MdExpandMore } from "react-icons/md";
 import "./TakePicture.css";
 
 const TakePicture = () => {
@@ -34,7 +35,7 @@ const TakePicture = () => {
   const error = useSelector((state) => state.recognize.error);
   const result = useSelector((state) => state.recognize.result);
   const users = useSelector((state) => state.recognize.users);
-  const allUsers = useSelector((state) => state.recognize.allUsers);
+  const imgpath = useSelector((state) => state.recognize.imgpath);
 
   //Capturing Image
   const capture = useCallback(() => {
@@ -45,19 +46,9 @@ const TakePicture = () => {
 
   //Use Effect
 
-  useEffect(() => {
-    if (result) {
-      dispatch(getUser(users));
-    }
-  }, [result]);
-
   //Button functions
   const handleReset = () => {
     dispatch(reset());
-  };
-
-  const handleSubmit = () => {
-    dispatch(recognizeUser(imgSrc));
   };
 
   return (
@@ -93,14 +84,21 @@ const TakePicture = () => {
           )}
           {imgSrc && (
             <>
-              <img src={imgSrc} className='takePictureImage' />
+              {!imgpath && <img src={imgSrc} className='takePictureImage' />}
+              {imgpath && (
+                <img src={require(`${imgpath}`)} className='takePictureImage' />
+              )}
               {loading && <CircularProgress />}
               {error && <h1>{error}</h1>}
-              {result && users && !loading && allUsers && (
-                <Accordion>
-                  {allUsers.map((user) => (
-                    <>
-                      <AccordionSummary>{user.name}</AccordionSummary>
+              <div>
+                {result &&
+                  users &&
+                  !loading &&
+                  users.map((user) => (
+                    <Accordion key={user.user_id}>
+                      <AccordionSummary expandIcon={<MdExpandMore />}>
+                        {user.name}
+                      </AccordionSummary>
                       <AccordionDetails>
                         <h1>Hello, {user && user.name}</h1>
                         <h2>Department, {user.department}</h2>
@@ -114,10 +112,9 @@ const TakePicture = () => {
                             : "You have preferred not to say"}
                         </h2>
                       </AccordionDetails>
-                    </>
+                    </Accordion>
                   ))}
-                </Accordion>
-              )}
+              </div>
               <Grid container columnGap={5} justifyContent='center'>
                 {!loading && (
                   <Button

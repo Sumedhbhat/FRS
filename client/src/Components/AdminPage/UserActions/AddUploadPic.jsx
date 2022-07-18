@@ -74,7 +74,7 @@ const AddUploadPic = ({ uploadPic, setUploadPic, setCount, setAddOpen }) => {
             {!image && (
               <input
                 type='file'
-                accept='.jpeg,.png'
+                accept='.jpeg,.png,.jpg'
                 onChange={(e) => {
                   handleSelect(e);
                 }}

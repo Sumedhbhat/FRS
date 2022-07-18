@@ -11,36 +11,36 @@ const initialState = {
   errorCode: null,
 };
 
-export const getUser = createAsyncThunk(
-  "user/getUserStatus",
-  async (users, { rejectWithValue, getState }) => {
-    const allUsers = [];
-    users.map(async (userId) => {
-      const data = await axios
-        .get(process.env.REACT_APP_SERVER + `/admin/users/?user_id=${userId}`)
-        .then((res) => {
-          console.log(res);
-          if (res.status === 200) {
-            return {
-              user: res.data,
-              userId: userId,
-            };
-          } else {
-            return {
-              code: res.status,
-              msg: res.data.msg,
-              userId: userId,
-            };
-          }
-        })
-        .catch((err) => {
-          return { msg: err.response.data.msg, userId: userId };
-        });
-      allUsers.push(data);
-    });
-    return allUsers;
-  }
-);
+// export const getUser = createAsyncThunk(
+//   "user/getUserStatus",
+//   async (users, { rejectWithValue, getState }) => {
+//     const allUsers = [];
+//     users.map(async (userId) => {
+//       const data = await axios
+//         .get(process.env.REACT_APP_SERVER + `/admin/users/?user_id=${userId}`)
+//         .then((res) => {
+//           console.log(res);
+//           if (res.status === 200) {
+//             return {
+//               user: res.data,
+//               userId: userId,
+//             };
+//           } else {
+//             return {
+//               code: res.status,
+//               msg: res.data.msg,
+//               userId: userId,
+//             };
+//           }
+//         })
+//         .catch((err) => {
+//           return { msg: err.response.data.msg, userId: userId };
+//         });
+//       allUsers.push(data);
+//     });
+//     return allUsers;
+//   }
+// );
 
 export const recognizeUser = createAsyncThunk(
   "recognize/recognizeUserStatus",
@@ -55,7 +55,6 @@ export const recognizeUser = createAsyncThunk(
         if (res.status === 200) {
           return {
             users: res.data.users,
-            msg: res.data.msg,
             imgpath: res.data.imgpath,
           };
         } else {
@@ -96,36 +95,40 @@ const recognize = createSlice({
       state.loading = true;
       state.result = false;
       state.users = null;
+      state.imgpath = null;
     });
     builder.addCase(recognizeUser.rejected, (state, action) => {
       state.error = action.payload.msg;
       state.errorCode = action.payload.code;
       state.loading = false;
       state.result = false;
+      state.imgpath = null;
+      state.users = null;
     });
     builder.addCase(recognizeUser.fulfilled, (state, action) => {
       state.error = null;
-      state.loading = true;
+      state.loading = false;
+      state.imgpath = action.payload.imgpath;
       state.result = true;
       state.users = action.payload.users;
     });
-    builder.addCase(getUser.pending, (state, action) => {
-      state.allUsers = null;
-      state.loading = true;
-      state.error = null;
-    });
-    builder.addCase(getUser.fulfilled, (state, action) => {
-      console.log(action);
-      state.allUsers = action.payload.allUsers;
-      state.error = null;
-      state.loading = false;
-    });
-    builder.addCase(getUser.rejected, (state, action) => {
-      state.allUsers = null;
-      state.error = action.payload.msg;
-      state.errorCode = action.payload.code;
-      state.loading = false;
-    });
+    // builder.addCase(getUser.pending, (state, action) => {
+    //   state.allUsers = null;
+    //   state.loading = true;
+    //   state.error = null;
+    // });
+    // builder.addCase(getUser.fulfilled, (state, action) => {
+    //   console.log(action);
+    //   state.allUsers = action.payload.allUsers;
+    //   state.error = null;
+    //   state.loading = false;
+    // });
+    // builder.addCase(getUser.rejected, (state, action) => {
+    //   state.allUsers = null;
+    //   state.error = action.payload.msg;
+    //   state.errorCode = action.payload.code;
+    //   state.loading = false;
+    // });
   },
 });
 
