@@ -60,8 +60,8 @@ const recognizeUser = async (req, res) => {
   }
 
   pyres.result.forEach((user) => {
-    var {user_id} = user;
-    clog(user_id, "recognized");
+    var {user_id, name} = user;
+    clog(user_id, "recognized", name);
   });
 
   if (!pyres.result[0]) {
