@@ -129,7 +129,7 @@ BEGIN
 		UPDATE `user` SET `captured_count` = `captured_count`+1 WHERE `user_id` = usr_id;
     INSERT INTO `user_capture_log` (`img_name`, `recognition_status`, `user_id`, `in/out`) 
     VALUES (img, "TRUE", usr_id, in_sts);
-    SELECT `name` FROM `user` WHERE `user_id` = usr_id;
+    SELECT * FROM `get_user` WHERE `user_id` = usr_id;
   END IF;
   IF (usr_id = "unrecognized") THEN
 		INSERT INTO `user_capture_log` (`img_name`, `recognition_status`, `in/out`) 

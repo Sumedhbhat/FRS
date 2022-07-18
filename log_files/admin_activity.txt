@@ -1,8 +1,1 @@
 This file keeps track of successful and unsuccessful admin login attempts and operations performed by the admin.
-
-17/7/2022, 3:11:51 pm	Username: sumedh              	Admin Login attempted with incorrect password: sudu_1000.
-17/7/2022, 3:12:02 pm	Username: sumedh              	Admin Login successful.
-17/7/2022, 3:13:36 pm	Username: sumedh              	Admin Login successful.
-17/7/2022, 3:13:39 pm	Username: sumedh              	Admin deleted user with user_id: 321e41c1-d18a-4c38-b436-74a7915e5dd1.
-17/7/2022, 3:13:52 pm	Username: sumedh              	Image with new user_id: dde9298d-3feb-44ea-9d15-6c8d8622e29f input by the admin.
-17/7/2022, 3:14:14 pm	Username: sumedh              	Admin created user with user_id: dde9298d-3feb-44ea-9d15-6c8d8622e29f.

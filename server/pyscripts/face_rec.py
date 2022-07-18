@@ -6,8 +6,7 @@ import numpy as np
 import face_recognition as fr
 import pymysql
 
-mydb = pymysql.connect(host="localhost", user="root",
-                       password="sudu_1000", database="FRS")
+mydb = pymysql.connect(host="localhost", user="root", password="sudu_1000", database="FRS")
 
 
 imgloc = str(sys.argv[1])
@@ -29,7 +28,7 @@ fe_file_loc = configs["fe_file_loc"]
 
 fe_file = os.path.join(frs_folder, fe_file_loc)
 
-output = {"user_id": []}
+output = {"result":[]}
 
 img = cv2.imread(imgloc)
 
@@ -48,7 +47,6 @@ else:
     known_face_encodings = list(face_emb.values())
 
     for i in range(len(face_encoding)):
-
         y_min, x_max, y_max, x_min = face_locations[i]
         fontType = cv2.FONT_HERSHEY_TRIPLEX
         recThic = 3
@@ -65,26 +63,27 @@ else:
         with mydb.cursor() as mycursor:
 
             if(face_distances[best_match] < threshold):
-                cv2.rectangle(img, (x_min, y_min),
-                              (x_max, y_max), col_acp, recThic)
-                output["user_id"].append(known_faces[best_match])
-                mycursor.execute("CALL record_user_capture(%s, %s, %s)", [
-                                 imgname, known_faces[best_match], in_out])
+                cv2.rectangle(img, (x_min, y_min),(x_max, y_max), col_acp, recThic)
+                mycursor.execute("CALL record_user_capture(%s, %s, %s)", [imgname, known_faces[best_match], in_out])
                 myresult = mycursor.fetchall()
-                name = myresult[0][0]
-                cv2.putText(img, name, (x_min, int(y_max + scale*30)),
-                            fontType, scale, col_acp, fontThic)
+                output["result"].append({
+                    "user_id": known_faces[best_match],
+                    "img": myresult[0][1],
+                    "name": myresult[0][2],
+                    "mob_no": myresult[0][3],
+                    "gender": myresult[0][4],
+                    "city": myresult[0][5],
+                    "department": myresult[0][6],
+                    "date_created": myresult[0][7].strftime("%Y-%m-%d %H:%M:%S")
+                })
+                cv2.putText(img, myresult[0][2], (x_min, int(y_max + scale*30)), fontType, scale, col_acp, fontThic)
             else:
-                cv2.rectangle(img, (x_min, y_min),
-                              (x_max, y_max), col_rej, recThic)
-                mycursor.execute("CALL record_user_capture(%s, %s, %s)", [
-                                 imgname, "unrecognized", in_out])
+                cv2.rectangle(img, (x_min, y_min), (x_max, y_max), col_rej, recThic)
+                mycursor.execute("CALL record_user_capture(%s, %s, %s)", [imgname, "unrecognized", in_out])
                 myresult = mycursor.fetchall()
-                cv2.putText(img, "no match", (x_min, int(
-                    y_max + scale*30)), fontType, scale, col_rej, fontThic)
+                cv2.putText(img, "no match", (x_min, int(y_max + scale*30)), fontType, scale, col_rej, fontThic)
 
             mydb.commit()
 
-        cv2.imwrite(imgloc, img)
-
+cv2.imwrite(imgloc, img)
 print(output)

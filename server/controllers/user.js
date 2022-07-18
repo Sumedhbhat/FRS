@@ -59,66 +59,16 @@ const recognizeUser = async (req, res) => {
     return res.status(211).json({ msg: pyres.errmsg });
   }
 
-  pyres.user_id.forEach((user) => {
-    // useEffect(() => {
-    //   if (userId && result) {
-    //     navigate("/result/?userId=" + userId);
-    //     dispatch(reset());
-    //   }
-    // }, [userId, error, loading]);
-    clog(user, "recognized");
+  pyres.result.forEach((user) => {
+    var {user_id} = user;
+    clog(user_id, "recognized");
   });
 
-  if (!pyres.user_id[0]) {
+  if (!pyres.result[0]) {
     clog(img, "unrecognized");
   }
 
-  return res.status(200).json({ users: pyres.user_id, imgpath: imgpath });
-
-  const { errmsg, msg, usr_id } = pyres;
-
-  if (errmsg) {
-    // fs.unlinkSync(imgpath);
-    return res.status(211).json({ msg: errmsg });
-  } else if (msg === "existing user") {
-    img = usr_id + extension;
-    db.promise()
-      .query("CALL record_user_capture(?,?,?)", [img, usr_id, in_out_status])
-      .then((result) => {
-        fs.renameSync(
-          imgpath,
-          path.join(capturesFolder, result[0][0][0]["@img_name"])
-        );
-        var user_name = result[0][0][0]["@user_name"];
-        clog(usr_id, "recognized", result[0][0][0]["@user_name"]);
-        if (in_out_status == "IN") {
-          return res
-            .status(211)
-            .json({ msg: `Hello ${user_name}!`, user_id: usr_id });
-        } else {
-          return res
-            .status(211)
-            .json({ msg: `Bye ${user_name}`, user_id: usr_id });
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        res.status(400).json({ msg: err.sqlMessage });
-      });
-  } else {
-    db.promise()
-      .query("CALL record_user_capture(?,?,?)", [
-        img,
-        "unrecognized",
-        in_out_status,
-      ])
-      .catch((err) => {
-        console.log(err);
-        res.status(400).json({ msg: err.sqlMessage });
-      });
-    clog(img, "unrecognized");
-    return res.status(211).json({ msg: "User Not Recognized" });
-  }
+  return res.status(200).json({ users: pyres.result, imgpath: imgpath });
 };
 
 module.exports = {
