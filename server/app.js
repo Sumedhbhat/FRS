@@ -15,18 +15,16 @@ app.use(
     origin: "*",
   })
 );
+app.use(express.static(path.join(__dirname, "..", "client", "build")));
 
+app.use("/*", (req, res) => {
+  res.sendFile(path.join(__dirname, "..", "client", "build", "index.html"));
+});
 
 const admin = require("./routes/admin");
 const user = require("./routes/user");
-app.use("/api/admin",admin);
+
+app.use("/api/admin", admin);
 app.use("/api/user", user);
 
-//app.use('/api/frs',express.static(path.join(__dirname, "..", "client", "build")));
-
-app.get("/", (req, res) => {
-	res.send('OKOKOK')
-//	 res.sendFile(path.resolve(__dirname, "..", "client", "build", "index.html"));
-});
-
-app.listen(port,'0.0.0.0', console.log(`Server listening at http://localhost:${port}`));
+app.listen(port, console.log(`Server listening at http://localhost:${port}`));

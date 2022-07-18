@@ -94,7 +94,7 @@ const recognizeFace = async (req, res) => {
 
   var pyres = 0;
 
-  const process = spawnSync("python3", [recface, imgpath, "admin"]);
+  const process = spawnSync("python3", [recface, imgpath]);
   try {
     pyres = JSON.parse(String(process.stdout).replace(/'/g, '"'));    
   }
