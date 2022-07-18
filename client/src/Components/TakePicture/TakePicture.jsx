@@ -8,8 +8,11 @@ import {
   Box,
   CircularProgress,
   Typography,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   addImage,
@@ -19,19 +22,21 @@ import {
   getUser,
 } from "../../Redux/reducers/recognizeReducer";
 import { AnimatePresence, motion } from "framer-motion";
+import { MdExpandMore } from "react-icons/md";
 import "./TakePicture.css";
 
 const TakePicture = () => {
   // Initialize state and variables
+  const location = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const webcamRef = useRef(null);
   const imgSrc = useSelector((state) => state.recognize.image);
   const loading = useSelector((state) => state.recognize.loading);
   const error = useSelector((state) => state.recognize.error);
-  const userId = useSelector((state) => state.recognize.userId);
   const result = useSelector((state) => state.recognize.result);
-  const user = useSelector((state) => state.recognize.user);
+  const users = useSelector((state) => state.recognize.users);
+  const imgpath = useSelector((state) => state.recognize.imgpath);
 
   //Capturing Image
   const capture = useCallback(() => {
@@ -42,25 +47,9 @@ const TakePicture = () => {
 
   //Use Effect
 
-  useEffect(() => {
-    if (result) {
-      dispatch(getUser(userId));
-    }
-  }, [result]);
-  // useEffect(() => {
-  //   if (userId && result) {
-  //     navigate("/result/?userId=" + userId);
-  //     dispatch(reset());
-  //   }
-  // }, [userId, error, loading]);
-
   //Button functions
   const handleReset = () => {
     dispatch(reset());
-  };
-
-  const handleSubmit = () => {
-    dispatch(recognizeUser(imgSrc));
   };
 
   return (
@@ -96,24 +85,44 @@ const TakePicture = () => {
           )}
           {imgSrc && (
             <>
-              <img src={imgSrc} className='takePictureImage' />
+              <img
+                src={
+                  imgpath
+                    ? require(`${process.env.REACT_APP_IMAGE}/captures/${imgpath}`)
+                    : imgSrc
+                }
+                className='takePictureImage'
+              />
               {loading && <CircularProgress />}
               {error && <h1>{error}</h1>}
-              {result && user && !loading && (
-                <Box>
-                  <h1>Hello, {user && user.name}</h1>
-                  <h2>Department, {user.department}</h2>
-                  <h2>City, {user.city}</h2>
-                  <h2>
-                    Gender,{" "}
-                    {user.gender === "M"
-                      ? "Male"
-                      : user.gender === "F"
-                      ? "F"
-                      : "You have preferred not to say"}
-                  </h2>
-                </Box>
-              )}
+              <div>
+                {result &&
+                  users &&
+                  !loading &&
+                  users.map((user) => (
+                    <Accordion key={user.user_id}>
+                      <AccordionSummary expandIcon={<MdExpandMore />}>
+                        <Typography variant='body1'>{user.name}</Typography>
+                      </AccordionSummary>
+                      <AccordionDetails>
+                        <Typography variant='body1'>
+                          Department: {user.department}
+                        </Typography>
+                        <Typography variant='body1'>
+                          City: {user.city}
+                        </Typography>
+                        <Typography variant='body1'>
+                          Gender:{" "}
+                          {user.gender === "M"
+                            ? "Male"
+                            : user.gender === "F"
+                            ? "Female"
+                            : "You have preferred not to say"}
+                        </Typography>
+                      </AccordionDetails>
+                    </Accordion>
+                  ))}
+              </div>
               <Grid container columnGap={5} justifyContent='center'>
                 {!loading && (
                   <Button
