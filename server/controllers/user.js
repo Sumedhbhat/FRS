@@ -68,7 +68,7 @@ const recognizeUser = async (req, res) => {
     clog(img, "unrecognized");
   }
 
-  return res.status(200).json({ users: pyres.result, imgpath: imgpath });
+  return res.status(200).json({ users: pyres.result, imgpath: img });
 };
 
 module.exports = {
