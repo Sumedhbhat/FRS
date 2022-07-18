@@ -80,7 +80,7 @@ const UploadPic = ({ modifyUploadPic, setModifyUploadPic, setModify }) => {
           {!image && (
             <input
               type='file'
-              accept='.jpeg'
+              accept='.jpeg,.png,.jpg'
               onChange={(e) => {
                 handleSelect(e);
               }}

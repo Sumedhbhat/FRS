@@ -113,7 +113,7 @@ const AdminPage = () => {
                         <IoMdClose size={30} />
                       </IconButton>
                       <img
-                        src={require(`../../../../user_images/uploads/${displayUser.base_img}`)}
+                        src={`${process.env.REACT_APP_IMAGE}/uploads/${displayUser.base_img}`}
                         alt=''
                         className='adminPageImage'
                       />
