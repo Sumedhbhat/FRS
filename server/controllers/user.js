@@ -66,6 +66,7 @@ const recognizeUser = async (req, res) => {
 
   if (!pyres.result[0]) {
     clog(img, "unrecognized");
+    return res.status(200).json({ msg: "face(s) not recognized", imgpath: img });
   }
 
   return res.status(200).json({ users: pyres.result, imgpath: img });
