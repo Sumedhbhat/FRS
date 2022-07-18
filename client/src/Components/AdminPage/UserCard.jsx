@@ -84,7 +84,7 @@ const UserCard = ({ user, setClick, click }) => {
           <Box className='backdrop' onClick={() => handleClick(user.user_id)} />
           <img
             onClick={handleClick}
-            src={require(`${process.env.REACT_APP_IMAGE}/uploads/${user.base_img}`)}
+            src={`${process.env.REACT_APP_IMAGE}/uploads/${user.base_img}`}
             alt=''
             className='adminPageImage'
           />
