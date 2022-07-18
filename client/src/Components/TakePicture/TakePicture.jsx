@@ -12,7 +12,7 @@ import {
   AccordionSummary,
   AccordionDetails,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   addImage,
@@ -27,6 +27,7 @@ import "./TakePicture.css";
 
 const TakePicture = () => {
   // Initialize state and variables
+  const location = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const webcamRef = useRef(null);
@@ -84,10 +85,14 @@ const TakePicture = () => {
           )}
           {imgSrc && (
             <>
-              {!imgpath && <img src={imgSrc} className='takePictureImage' />}
-              {imgpath && (
-                <img src={require(`${imgpath}`)} className='takePictureImage' />
-              )}
+              <img
+                src={
+                  imgpath
+                    ? require(`../../../../user_images/captures/${imgpath}`)
+                    : imgSrc
+                }
+                className='takePictureImage'
+              />
               {loading && <CircularProgress />}
               {error && <h1>{error}</h1>}
               <div>
@@ -97,20 +102,23 @@ const TakePicture = () => {
                   users.map((user) => (
                     <Accordion key={user.user_id}>
                       <AccordionSummary expandIcon={<MdExpandMore />}>
-                        {user.name}
+                        <Typography variant='body1'>{user.name}</Typography>
                       </AccordionSummary>
                       <AccordionDetails>
-                        <h1>Hello, {user && user.name}</h1>
-                        <h2>Department, {user.department}</h2>
-                        <h2>City, {user.city}</h2>
-                        <h2>
-                          Gender,{" "}
+                        <Typography variant='body1'>
+                          Department: {user.department}
+                        </Typography>
+                        <Typography variant='body1'>
+                          City: {user.city}
+                        </Typography>
+                        <Typography variant='body1'>
+                          Gender:{" "}
                           {user.gender === "M"
                             ? "Male"
                             : user.gender === "F"
-                            ? "F"
+                            ? "Female"
                             : "You have preferred not to say"}
-                        </h2>
+                        </Typography>
                       </AccordionDetails>
                     </Accordion>
                   ))}

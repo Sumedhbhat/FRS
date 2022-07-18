@@ -84,13 +84,14 @@ const AdminPage = () => {
               justifyContent='space-between'
               flexDirection={["column-reverse", "column-reverse", "row"]}
             >
-              <Grid item xs={click ? [12, 12, 9] : 12}>
+              <Grid item xs={click ? 12 : 12} md={click ? 9 : 12}>
                 <Grid container gap={3} justifyContent='center'>
                   {!error.getUsers &&
                     !error.filterUsers &&
                     users !== null &&
                     users.map((user) => (
                       <UserCard
+                        click={click}
                         setClick={setClick}
                         user={user}
                         key={user.user_id}
@@ -100,7 +101,8 @@ const AdminPage = () => {
               </Grid>
               <Grid
                 item
-                xs={[3, 2.5]}
+                xs={12}
+                md={2.7}
                 display={click ? "flex" : "none"}
                 justifyContent='center'
               >

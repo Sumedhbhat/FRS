@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import { Box, Grid, Typography, Button } from "@mui/material";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { reset } from "../../Redux/reducers/recognizeReducer";
 
 const Home = () => {
+  const dispatch = useDispatch();
   useEffect(() => {
-    console.log("Home");
-    console.log(process.env.REACT_APP_SERVER);
-  });
+    dispatch(reset());
+  }, []);
 
   const navigate = useNavigate();
   return (
