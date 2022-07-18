@@ -127,17 +127,14 @@ CREATE PROCEDURE `record_user_capture` (IN img VARCHAR(50), IN usr_id VARCHAR(36
 BEGIN
 	IF (usr_id != "unrecognized") THEN
 		UPDATE `user` SET `captured_count` = `captured_count`+1 WHERE `user_id` = usr_id;
-        SET @cap_cnt = (SELECT `captured_count` FROM `user` WHERE `user_id` = usr_id);
-        SET @user_name = (SELECT `name` FROM `user` WHERE `user_id` = usr_id);
-        SET @img_name = CONCAT(@cap_cnt, "==", img);
-        INSERT INTO `user_capture_log` (`img_name`, `recognition_status`, `user_id`, `in/out`) 
-        VALUES (@img_name, "TRUE", usr_id, in_sts);
-        SELECT @img_name, @user_name;
-    END IF;
-    IF (usr_id = "unrecognized") THEN
+    INSERT INTO `user_capture_log` (`img_name`, `recognition_status`, `user_id`, `in/out`) 
+    VALUES (img, "TRUE", usr_id, in_sts);
+    SELECT * FROM `get_user` WHERE `user_id` = usr_id;
+  END IF;
+  IF (usr_id = "unrecognized") THEN
 		INSERT INTO `user_capture_log` (`img_name`, `recognition_status`, `in/out`) 
-        VALUES (img, "FALSE", in_sts);
-    END IF;
+    VALUES (img, "FALSE", in_sts);
+  END IF;
 END$$
 DELIMITER ;
 

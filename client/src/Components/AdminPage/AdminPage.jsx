@@ -114,7 +114,6 @@ const AdminPage = () => {
                       </IconButton>
                       <img
                         src={`${process.env.REACT_APP_IMAGE}/uploads/${displayUser.base_img}`}
-
                         alt=''
                         className='adminPageImage'
                       />

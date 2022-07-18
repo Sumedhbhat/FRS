@@ -43,4 +43,4 @@ This file keeps track of successful and unsuccessful admin login attempts and op
 7/18/2022, 6:53:10 PM	Username: vedansh             	Admin Login successful.
 7/18/2022, 7:42:35 PM	Username: sumedh              	Admin Login successful.
 7/18/2022, 7:42:44 PM	Username: sumedh              	Image with new user_id: 41efc6db-1399-4498-8cfe-8a29a174b1b4 input by the admin.
-7/18/2022, 7:42:52 PM	Username: sumedh              	Admin created user with user_id: 41efc6db-1399-4498-8cfe-8a29a174b1b4.
+7/18/2022, 7:42:52 PM	Username: sumedh              	Admin created user with user_id: 41efc6db-1399-4498-8cfe-8a29a174b1

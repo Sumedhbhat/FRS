@@ -6,7 +6,6 @@ import cv2
 import os
 
 imgloc = str(sys.argv[1])
-user = str(sys.argv[2])
 userid = imgloc[imgloc.rindex("/")+1: imgloc.rindex(".")]
 
 frs_folder = os.path.abspath(os.path.join(__file__ ,os.pardir, os.pardir, os.pardir))
@@ -31,13 +30,14 @@ face_locations = fr.face_locations(given_image, model=training_model)
 im = cv2.imread(imgloc)
 h, w, _ = im.shape
 
-t, r, b, l = face_locations[0]
+if len(face_locations) != 0:
+    t, r, b, l = face_locations[0]
 
 if len(face_locations) == 0:
     output['errmsg'] = 'no face'
 elif len(face_locations) > 1:
     output['errmsg'] = 'multiple faces'
-elif (user == "admin") and ((r-l)/w < face_ratio) and ((b-t)/h < face_ratio) and ((r - l) * (b - t) / (h * w) < face_ratio):
+elif ((r-l)/w < face_ratio) and ((b-t)/h < face_ratio) and ((r - l) * (b - t) / (h * w) < face_ratio):
     output['errmsg'] = 'too little face area'
 else:
     with open(fe_file, 'r') as f:
@@ -58,5 +58,6 @@ else:
         output["usr_id"] = userid
     
     output['face_encoding'] = face_encoding[0].tolist()
+
 
 print(output)
