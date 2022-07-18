@@ -6,16 +6,25 @@ import numpy as np
 import face_recognition as fr
 import pymysql
 
-mydb = pymysql.connect(host="localhost", user="root", password="sudu_1000", database="FRS")
+frs_folder = os.path.abspath(os.path.join(__file__, os.pardir, os.pardir, os.pardir))
+
+db_config_file = os.path.join(frs_folder, "server/db/db_config.json")
+
+with open(db_config_file, 'r') as f:
+    db_configs = json.load(f)
+
+host = db_configs['host']
+user = db_configs["user"]
+password = db_configs["password"]
+database = db_configs["database"]
+
+mydb = pymysql.connect(host=host, user=user, password=password, database=database)
 
 
 imgloc = str(sys.argv[1])
 in_out = str(sys.argv[2])
 
 imgname = imgloc[imgloc.rindex("/")+1:]
-
-frs_folder = os.path.abspath(os.path.join(
-    __file__, os.pardir, os.pardir, os.pardir))
 
 config_file = os.path.join(frs_folder, "server/pyscripts/config.json")
 
