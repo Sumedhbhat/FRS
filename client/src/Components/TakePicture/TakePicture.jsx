@@ -88,7 +88,7 @@ const TakePicture = () => {
               <img
                 src={
                   imgpath
-                    ? require(`${process.env.REACT_APP_IMAGE}/captures/${imgpath}`)
+                    ? `${process.env.REACT_APP_IMAGE}/captures/${imgpath}`
                     : imgSrc
                 }
                 className='takePictureImage'

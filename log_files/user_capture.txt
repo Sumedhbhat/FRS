@@ -1,1 +1,16 @@
 This file keeps track of images captured from the user's end and the access management.
+
+7/14/2022, 8:21:29 PM	Img_id:  e28f4fbd-7e89-42f0-b28d-58518af64dbc.jpeg	Denied passage through the facial recognition system.
+7/14/2022, 8:21:44 PM	Img_id:  c8bde998-c1a1-4859-a96c-b65aa57a1a7b.jpeg	Denied passage through the facial recognition system.
+7/18/2022, 7:41:39 PM	Img_id:  02601b0c-aab5-4b24-9c85-0a1cc94be65c.jpeg	Denied passage through the facial recognition system.
+7/18/2022, 7:41:45 PM	Img_id:  5fbb3a00-d26a-4f5e-b375-330a286318de.jpeg	Denied passage through the facial recognition system.
+7/18/2022, 7:42:19 PM	Img_id:  94abbb55-17a3-4a3f-8315-d49191983662.jpeg	Denied passage through the facial recognition system.
+7/18/2022, 7:42:26 PM	Img_id:  cb8fbd97-ec77-476f-8535-e78ea0e40f26.jpeg	Denied passage through the facial recognition system.
+7/18/2022, 7:43:04 PM	User_id: 41efc6db-1399-4498-8cfe-8a29a174b1b4     	Sumedh was granted passage through the facial recognition system.
+7/18/2022, 7:43:15 PM	User_id: 41efc6db-1399-4498-8cfe-8a29a174b1b4     	Sumedh was granted passage through the facial recognition system.
+7/18/2022, 7:43:46 PM	User_id: 41efc6db-1399-4498-8cfe-8a29a174b1b4     	Sumedh was granted passage through the facial recognition system.
+7/18/2022, 7:45:59 PM	User_id: 41efc6db-1399-4498-8cfe-8a29a174b1b4     	Sumedh was granted passage through the facial recognition system.
+7/18/2022, 7:46:12 PM	User_id: 41efc6db-1399-4498-8cfe-8a29a174b1b4     	Sumedh was granted passage through the facial recognition system.
+7/18/2022, 7:50:38 PM	User_id: 41efc6db-1399-4498-8cfe-8a29a174b1b4     	Sumedh was granted passage through the facial recognition system.
+7/18/2022, 7:52:22 PM	User_id: 41efc6db-1399-4498-8cfe-8a29a174b1b4     	Sumedh was granted passage through the facial recognition system.
+7/18/2022, 7:52:29 PM	User_id: 41efc6db-1399-4498-8cfe-8a29a174b1b4     	Sumedh was granted passage through the facial recognition system.

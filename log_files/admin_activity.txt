@@ -11,3 +11,36 @@ This file keeps track of successful and unsuccessful admin login attempts and op
 7/13/2022, 8:38:27 PM	Username: sumedh              	Admin Login successful.
 7/13/2022, 8:53:23 PM	Username: sumedh              	Admin Login successful.
 7/13/2022, 8:53:35 PM	Username: sumedh              	Admin Login successful.
+7/14/2022, 6:56:06 PM	Username: sumedh              	Image with new user_id: 97c0c050-3d1f-4703-a5a7-a28a6431e406 input by the admin.
+7/14/2022, 6:56:15 PM	Username: sumedh              	Image with new user_id: 7fc089d3-7345-4833-ad0e-5fe728115d0e input by the admin.
+7/14/2022, 6:57:47 PM	Username: sumedh              	Admin Login successful.
+7/14/2022, 6:58:09 PM	Username: sumedh              	Image with new user_id: 86609330-0458-4d1b-9f23-dceb09e46c36 input by the admin.
+7/14/2022, 6:58:36 PM	Username: sumedh              	Admin created user with user_id: 86609330-0458-4d1b-9f23-dceb09e46c36.
+7/14/2022, 7:07:18 PM	Username: sumedh              	Admin Login successful.
+7/14/2022, 7:07:51 PM	Username: sumedh              	Admin Login successful.
+7/14/2022, 7:11:58 PM	Username: sumedh              	Admin Login successful.
+7/14/2022, 7:12:10 PM	Username: sumedh              	Image with new user_id: 478c7efe-1957-4112-a949-95d8e9c418a5 input by the admin.
+7/14/2022, 7:12:25 PM	Username: sumedh              	Admin created user with user_id: 478c7efe-1957-4112-a949-95d8e9c418a5.
+7/14/2022, 7:12:36 PM	Username: sumedh              	Admin Login successful.
+7/14/2022, 7:13:05 PM	Username: sumedh              	Admin Login successful.
+7/14/2022, 7:13:43 PM	Username: sumedh              	Admin Login successful.
+7/14/2022, 7:17:33 PM	Username: sumedh              	Admin Login successful.
+7/14/2022, 7:17:37 PM	Username: sumedh              	Admin deleted user with user_id: 478c7efe-1957-4112-a949-95d8e9c418a5.
+7/14/2022, 7:17:46 PM	Username: sumedh              	Image with new user_id: bcef04d5-ce8f-4366-90e1-10f931022a1c input by the admin.
+7/14/2022, 7:17:55 PM	Username: sumedh              	Admin created user with user_id: bcef04d5-ce8f-4366-90e1-10f931022a1c.
+7/14/2022, 7:18:29 PM	Username: sumedh              	Admin Login successful.
+7/14/2022, 7:19:00 PM	Username: sumedh              	Admin deleted user with user_id: bcef04d5-ce8f-4366-90e1-10f931022a1c.
+7/14/2022, 7:20:06 PM	Username: vedansh             	Admin Login successful.
+7/14/2022, 7:54:54 PM	Username: sumedh              	Admin Login successful.
+7/14/2022, 10:17:29 PM	Username: vedansh             	Admin Login successful.
+7/14/2022, 10:17:31 PM	Username: vedansh             	Admin Login successful.
+7/14/2022, 10:17:41 PM	Username: vedansh             	Admin Login successful.
+7/14/2022, 10:22:20 PM	Username: vedansh             	Admin Login successful.
+7/14/2022, 10:27:45 PM	Username: vedansh             	Admin Login successful.
+7/14/2022, 10:28:01 PM	Username: vedansh             	Admin Login successful.
+7/14/2022, 10:29:04 PM	Username: vedansh             	Admin Login successful.
+7/15/2022, 10:37:01 AM	Username: vedansh             	Admin Login successful.
+7/18/2022, 6:53:10 PM	Username: vedansh             	Admin Login successful.
+7/18/2022, 7:42:35 PM	Username: sumedh              	Admin Login successful.
+7/18/2022, 7:42:44 PM	Username: sumedh              	Image with new user_id: 41efc6db-1399-4498-8cfe-8a29a174b1b4 input by the admin.
+7/18/2022, 7:42:52 PM	Username: sumedh              	Admin created user with user_id: 41efc6db-1399-4498-8cfe-8a29a174b1b4.
