@@ -9,19 +9,21 @@ const port = process.env.PORT || 5000;
 app.use(bodyParser.json({ limit: "50mb" }));
 app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 app.use(fileupload());
+/*
 app.use(
   cors({
     methods: ["GET", "POST", "DELETE", "UPDATE", "PUT", "PATCH"],
     origin: "*",
   })
 );
-
+*/
+/*
 app.use(express.static(path.join(__dirname, "..", "client", "build")));
 
 app.use("/*", (req, res) => {
   res.sendFile(path.join(__dirname, "..", "client", "build", "index.html"));
 });
-
+*/
 const admin = require("./routes/admin");
 const user = require("./routes/user");
 
