@@ -8,6 +8,7 @@ import AdminPage from "./Components/AdminPage/AdminPage";
 import PicCapture from "./Components/TakePicture/Testing/PicCapture";
 import { useDispatch, useSelector } from "react-redux";
 import { getUsers } from "./Redux/functions/userFunctions";
+import TakePicture2 from "./Components/TakePicture2/TakePicture2";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -25,6 +26,7 @@ const App = () => {
         <Route path='/login' element={<LoginPage />} />
         <Route path='/admin' element={<AdminPage />} />
         <Route path='/pic-capture' element={<PicCapture />} />
+        <Route path='/pic-capture2' element={<TakePicture2 />} />
         <Route path='*' element={<h1>Not Found</h1>} />
       </Routes>
     </Router>
