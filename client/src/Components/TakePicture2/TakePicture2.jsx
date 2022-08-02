@@ -60,10 +60,11 @@ const TakePicture2 = () => {
       users !== null &&
       users.length > 0 &&
       allUsers.length < users.length &&
-      allUsers.slice(-1 * users.length) !== users
+      allUsers[-1].id !== users[-1].id
     ) {
-      setAllUsers((prev) => [prev, ...users]);
+      setAllUsers((prev) => [...prev, ...users]);
     }
+    console.log(allUsers);
     // console.log(allUsers);
   }, [users]);
 
@@ -95,6 +96,7 @@ const TakePicture2 = () => {
       }, 4000);
     }
   }, [faceDetected, webcamRef]);
+
   const detect = async (model) => {
     if (
       typeof webcamRef.current !== "undefined" &&
@@ -152,14 +154,14 @@ const TakePicture2 = () => {
             {faceDetected && detectionStatus && loading && time2 > 0 && (
               <>
                 <Typography variant='h6' align='center'>
-                  Please wait for a moment {time2}
+                  Please wait for a moment before the next picture {time2}
                 </Typography>
               </>
             )}
             {faceDetected && detectionStatus && !loading && time > 0 && (
               <>
                 <Typography variant='h6' align='center'>
-                  Please wait while we take a picture {time}
+                  Taking a picture in {time}
                 </Typography>
               </>
             )}
@@ -201,4 +203,5 @@ const TakePicture2 = () => {
     </Stack>
   );
 };
+
 export default TakePicture2;
