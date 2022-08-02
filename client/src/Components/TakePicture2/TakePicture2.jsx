@@ -59,10 +59,13 @@ const TakePicture2 = () => {
       allUsers !== null &&
       users !== null &&
       users.length > 0 &&
-      allUsers.length <= users.length &&
-      allUsers.slice(-1 * users.length) !== users
+      // allUsers.length <= users.length
+      allUsers.slice(-1)[0].user_id != users.slice(-1)[0].user_id
     ) {
       setAllUsers((prev) => prev.concat(users));
+      console.log(users);
+      console.log(allUsers.slice(-1 * users.length));
+      console.log(allUsers.slice(-1 * users.length) == users);
     }
     // console.log(allUsers);
   }, [users]);
@@ -172,8 +175,8 @@ const TakePicture2 = () => {
               Latest recognized Users
             </Typography>
             {allUsers !== null ? (
-              allUsers.map((user) => (
-                <Accordion key={user.user_id}>
+              allUsers.map((user, index) => (
+                <Accordion key={index}>
                   <AccordionSummary expandIcon={<MdExpandMore />}>
                     <Typography variant='h5'>{user.name}</Typography>
                   </AccordionSummary>
