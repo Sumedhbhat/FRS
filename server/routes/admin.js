@@ -11,6 +11,8 @@ const {
   getUsers,
   getSortedUsers,
   getFilteredUsers,
+  getUserCaptureLog,
+  getAdminLog,
 } = require("../controllers/admin");
 
 router.route("/login").post(adminLogin);
@@ -18,6 +20,8 @@ router.route("/recognizeface").post(recognizeFace);
 router.route("/users/create").post(createUser);
 router.route("/dashboard").get(getUsers);
 router.route("/users/sort").post(getSortedUsers);
+router.route("/users/capturelog").get(getUserCaptureLog);
+router.route("/adminlog").get(getAdminLog);
 router
   .route("/users/:user_id?")
   .get(getUser)
