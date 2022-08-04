@@ -35,7 +35,7 @@ fe_file = os.path.join(frs_folder, fe_file_loc)
 
 images = str(sys.argv[1]).split(",")
 
-output = {"number of images uploaded": len(images), "number of faces detected": 0, "number of faces recognized": 0, "names of people recognized": []}
+output = {"uploaded": len(images), "detected": 0, "recognized": 0, "recognizedNames": []}
 
 with open(fe_file, 'r') as f:
     face_emb = json.load(f)
@@ -56,17 +56,17 @@ for image in images:
         if faces_in_given_images:
             distances = fr.face_distance(found_encodings, face_encoding)
         if not faces_in_given_images or min(distances) > threshold:
-            output["number of faces detected"] += 1
+            output["detected"] += 1
             distances = fr.face_distance(known_face_encodings, face_encoding)
             matchIndex = np.argmin(distances)
             if distances[matchIndex] < threshold:
                 faces_in_given_images[known_faces[matchIndex]] = face_encoding
-                output["number of faces recognized"] += 1
+                output["recognized"] += 1
                 mycursor = mydb.cursor()
                 sql = "SELECT name FROM user WHERE user_id = '"+known_faces[matchIndex]+"'"
                 mycursor.execute(sql)
                 myresult = mycursor.fetchall()
-                output["names of people recognized"].append(myresult[0][0])
+                output["recognizedNames"].append(myresult[0][0])
             else:
                 faces_in_given_images[uuid.uuid4()] = face_encoding
 
