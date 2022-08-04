@@ -75,7 +75,6 @@ const recognizeUser = async (req, res) => {
 
 const attendanceRecognition = async (req, res) => {
   var { images } = req.body;
-
   if(!req.files && !images) {
     return res.status(400).json({msg: 'No images were uploaded.'});
   }
@@ -89,9 +88,9 @@ const attendanceRecognition = async (req, res) => {
       if (extension !== ".png" && extension !== ".jpeg") {
         return res.status(415).json({ msg: "unsupported filetype" });
       }
-      var img = uuidv4() + extension;
+      var imgname = uuidv4() + extension;
 
-      const imgpath = path.join(attendanceFolder, img);
+      const imgpath = path.join(attendanceFolder, imgname);
 
       const base64str = img.substring(img.indexOf(",") + 1);
       fs.writeFileSync(imgpath, base64str, "base64");
