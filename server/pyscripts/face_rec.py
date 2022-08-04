@@ -38,6 +38,7 @@ fe_file_loc = configs["fe_file_loc"]
 fe_file = os.path.join(frs_folder, fe_file_loc)
 
 output = {"result":[]}
+already_found_user_ids = []
 
 img = cv2.imread(imgloc)
 
@@ -68,24 +69,27 @@ else:
         face_distances = fr.face_distance(
             known_face_encodings, face_encoding[i])
         best_match = np.argmin(face_distances)
-
+        
         with mydb.cursor() as mycursor:
 
             if(face_distances[best_match] < threshold):
-                cv2.rectangle(img, (x_min, y_min),(x_max, y_max), col_acp, recThic)
-                mycursor.execute("CALL record_user_capture(%s, %s, %s)", [imgname, known_faces[best_match], in_out])
-                myresult = mycursor.fetchall()
-                output["result"].append({
-                    "user_id": known_faces[best_match],
-                    "img": myresult[0][1],
-                    "name": myresult[0][2],
-                    "mob_no": myresult[0][3],
-                    "gender": myresult[0][4],
-                    "city": myresult[0][5],
-                    "department": myresult[0][6],
-                    "date_created": myresult[0][7].strftime("%Y-%m-%d %H:%M:%S")
-                })
-                cv2.putText(img, myresult[0][2], (x_min, int(y_max + scale*30)), fontType, scale, col_acp, fontThic)
+                if(known_faces[best_match] not in already_found_user_ids):
+                    already_found_user_ids.append(known_faces[best_match])
+                    cv2.putText(img, "Accepted", (x_min, y_min-10), fontType, scale, col_acp, recThic, cv2.LINE_AA)
+                    cv2.rectangle(img, (x_min, y_min),(x_max, y_max), col_acp, recThic)
+                    mycursor.execute("CALL record_user_capture(%s, %s, %s)", [imgname, known_faces[best_match], in_out])
+                    myresult = mycursor.fetchall()
+                    output["result"].append({
+                        "user_id": known_faces[best_match],
+                        "img": myresult[0][1],
+                        "name": myresult[0][2],
+                        "mob_no": myresult[0][3],
+                        "gender": myresult[0][4],
+                        "city": myresult[0][5],
+                        "department": myresult[0][6],
+                        "date_created": myresult[0][7].strftime("%Y-%m-%d %H:%M:%S")
+                    })
+                    cv2.putText(img, myresult[0][2], (x_min, int(y_max + scale*30)), fontType, scale, col_acp, fontThic)
             else:
                 cv2.rectangle(img, (x_min, y_min), (x_max, y_max), col_rej, recThic)
                 mycursor.execute("CALL record_user_capture(%s, %s, %s)", [imgname, "unrecognized", in_out])
