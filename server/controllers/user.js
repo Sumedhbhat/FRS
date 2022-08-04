@@ -95,23 +95,17 @@ const attendanceRecognition = async (req, res) => {
 
       const base64str = img.substring(img.indexOf(",") + 1);
       fs.writeFileSync(imgpath, base64str, "base64");
-      imgLocs.push(img);
+      imgLocs.push(imgpath);
     }
   }
   else {
     for (const [key, file] of Object.entries(req.files)) {
       var img = uuidv4() + "." + file.mimetype.split("/")[1];
       const imgpath = path.join(attendanceFolder, img);
-      file.mv(imgpath, function (err) {
-        if (err) {
-          return res.status(500).json({msg: "Something went wrong trying to upload the image"});
-        }
-      });
-      imgLocs.push(img);
+      fs.writeFileSync(imgpath, file.data);
+      imgLocs.push(imgpath);
     }
   }
-  console.log(imgLocs);
-  // Changes to be made from here
   var pyres = 0;
 
   const process = spawnSync("python3", [recface_attendance, imgLocs]);
@@ -124,18 +118,6 @@ const attendanceRecognition = async (req, res) => {
         .status(400)
         .json({ msg: "something went wrong with python script" });
     }
-  // if (pyres.errmsg) {
-  //   return res.status(211).json({ msg: pyres.errmsg });
-  // }
-
-  // pyres.result.forEach((user) => {
-  //   var {user_id, name} = user;
-  //   clog(user_id, "recognized", name);
-  // });
-
-  // if (!pyres.result[0]) {
-  //   clog(img, "unrecognized");
-  // }
   return res.status(200).send(pyres);
 }
 

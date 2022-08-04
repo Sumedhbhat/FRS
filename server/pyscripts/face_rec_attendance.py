@@ -34,15 +34,8 @@ fe_file_loc = configs["fe_file_loc"]
 fe_file = os.path.join(frs_folder, fe_file_loc)
 
 images = str(sys.argv[1]).split(",")
-# print(images)
 
-# images = [
-#   '/Users/vedansh/Desktop/FRS/user_images/attendance/2e9bec42-99f5-4423-b265-265f5e25f716.png',
-#   '/Users/vedansh/Desktop/FRS/user_images/attendance/84017716-f96e-42ac-bd00-c23d5a950a54.jpeg',
-#   '/Users/vedansh/Desktop/FRS/user_images/attendance/a4d2a0e9-2145-4603-b6a7-19504f9af144.png'
-# ]
-
-output = {"number of images": len(images), "number of faces detected": 0, "number of faces recognized": 0, "names of people recognized": []}
+output = {"number of images uploaded": len(images), "number of faces detected": 0, "number of faces recognized": 0, "names of people recognized": []}
 
 with open(fe_file, 'r') as f:
     face_emb = json.load(f)
@@ -54,7 +47,7 @@ faces_in_given_images = {}
 
 
 for image in images:
-    given_image = fr.load_image_file(os.path.join(attendance_folder, image))
+    given_image = fr.load_image_file(image)
     face_locations = fr.face_locations(given_image, model=training_model)
     face_encodings = fr.face_encodings(given_image, face_locations)
 
@@ -74,7 +67,6 @@ for image in images:
                 mycursor.execute(sql)
                 myresult = mycursor.fetchall()
                 output["names of people recognized"].append(myresult[0][0])
-                # output["names of people recognized"].append(known_faces[matchIndex])
             else:
                 faces_in_given_images[uuid.uuid4()] = face_encoding
 
