@@ -9,6 +9,7 @@ const uploadsFolder = path.join(user_imagesFolder, "uploads");
 const tempFolder = path.join(user_imagesFolder, "temp");
 const deletesFolder = path.join(user_imagesFolder, "deletes");
 const capturesFolder = path.join(user_imagesFolder, "captures");
+const attendanceFolder = path.join(user_imagesFolder, "attendance");
 
 const clog = require("../utils/captureLogger");
 
@@ -20,6 +21,7 @@ const fe_file = path.join(
 );
 const pyscripts = path.join(__dirname, "..", "pyscripts");
 const recface = path.join(pyscripts, "face_rec.py");
+const recface_attendance = path.join(pyscripts, "face_rec_attendance.py");
 
 const recognizeUser = async (req, res) => {
   var { base64img, in_out_status } = req.body;
@@ -71,6 +73,55 @@ const recognizeUser = async (req, res) => {
   return res.status(200).json({ users: pyres.result, imgpath: img });
 };
 
+const attendanceRecognition = async (req, res) => {
+  var { images } = req.body;
+
+  if(!req.files && !images) {
+    return res.status(400).json({msg: 'No images were uploaded.'});
+  }
+
+  imgLocs = [];
+
+  if(images) {
+    for(var i = 0; i < images.length; i++) {
+      var img = images[i];
+      var extension = "." + img.substring(11, img.indexOf(";"));
+      if (extension !== ".png" && extension !== ".jpeg") {
+        return res.status(415).json({ msg: "unsupported filetype" });
+      }
+      var img = uuidv4() + extension;
+
+      const imgpath = path.join(attendanceFolder, img);
+
+      const base64str = img.substring(img.indexOf(",") + 1);
+      fs.writeFileSync(imgpath, base64str, "base64");
+      imgLocs.push(imgpath);
+    }
+  }
+  else {
+    for (const [key, file] of Object.entries(req.files)) {
+      var img = uuidv4() + "." + file.mimetype.split("/")[1];
+      const imgpath = path.join(attendanceFolder, img);
+      fs.writeFileSync(imgpath, file.data);
+      imgLocs.push(imgpath);
+    }
+  }
+  var pyres = 0;
+
+  const process = spawnSync("python3", [recface_attendance, imgLocs]);
+  try {
+    pyres = JSON.parse(String(process.stdout).replace(/'/g, '"'));
+  } catch (e) {
+      console.log(e);
+      console.log(String(process.stderr));
+      return res
+        .status(400)
+        .json({ msg: "something went wrong with python script" });
+    }
+  return res.status(200).send(pyres);
+}
+
 module.exports = {
   recognizeUser,
+  attendanceRecognition
 };
