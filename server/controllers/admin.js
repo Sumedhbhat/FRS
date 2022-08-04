@@ -42,6 +42,7 @@ const adminLogin = async (req, res) => {
       } else {
         if (password === result[0][0].password) {
           alog(username, "Admin Login successful");
+          db.execute("INSERT INTO admin_log (change_by, change_on, change_type) VALUE (?, ?, ?)", [username, "SELF", "LOGIN"]);
           res.status(200).json({ msg: "login successful" });
         } else {
           alog(
