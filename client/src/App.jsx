@@ -9,6 +9,7 @@ import PicCapture from "./Components/TakePicture/Testing/PicCapture";
 import { useDispatch, useSelector } from "react-redux";
 import { getUsers } from "./Redux/functions/userFunctions";
 import TakePicture2 from "./Components/TakePicture2/TakePicture2";
+import MultipleImages from "./Components/MulitpleImages/MultipleImages";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -21,12 +22,12 @@ const App = () => {
     <Router basename={basename}>
       <Routes>
         <Route path='/' element={<Home />} />
-        {/* <Route path='/result' element={<ResultPage />} /> */}
         <Route path='/take-picture' element={<TakePicture />} />
         <Route path='/login' element={<LoginPage />} />
         <Route path='/admin' element={<AdminPage />} />
         <Route path='/pic-capture' element={<PicCapture />} />
         <Route path='/pic-capture2' element={<TakePicture2 />} />
+        <Route path='/multiple-images' element={<MultipleImages />} />
         <Route path='*' element={<h1>Not Found</h1>} />
       </Routes>
     </Router>

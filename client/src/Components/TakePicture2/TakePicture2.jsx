@@ -153,7 +153,7 @@ const TakePicture2 = () => {
                 <CircularProgress />
               </>
             )}
-            {faceDetected && detectionStatus && loading && time2 > 0 && (
+            {faceDetected && detectionStatus && loading&& time2> 0 && (
               <>
                 <Typography variant='h6' align='center'>
                   Please wait for a moment before the next picture {time2}
