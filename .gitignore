@@ -24,3 +24,4 @@ server/face_encodings/.DS_Store
 server/pyscripts/.DS_Store
 server/routes/.DS_Store
 server/utils/.DS_Store
+server/face_encodings/*
