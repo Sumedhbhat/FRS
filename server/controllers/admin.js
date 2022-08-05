@@ -14,9 +14,6 @@ const tempFolder = path.join(user_imagesFolder, "temp");
 const deletesFolder = path.join(user_imagesFolder, "deletes");
 const capturesFolder = path.join(user_imagesFolder, "captures");
 
-const capture_log_file = path.join(__dirname, "..", "..", "log_files", "user_capture.txt");
-const admin_log_file = path.join(__dirname, "..", "..", "log_files", "admin_activity.txt");
-
 const fe_file = path.join(
   __dirname,
   "..",
@@ -412,13 +409,27 @@ const getFilteredUsers = async (req, res) => {
 };
 
 const getUserCaptureLog = async (req, res) => {
-  var capture_logs = fs.readFileSync(capture_log_file).toString().split('\n').splice(2);
-  return res.status(200).json(capture_logs.slice(-20));
+  db.promise().query("CALL get_capture_log()")
+    .then((result) => {
+      res.status(200).json(result[0][0]);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ msg: err.sqlMessage });
+    });
 }
 
 const getAdminLog = async (req, res) => {
-  var admin_logs = fs.readFileSync(admin_log_file).toString().split('\n').splice(2);
-  return res.status(200).json(admin_logs.slice(-20));
+  const {admin_name} = req.body;
+  if (!admin_name) return res.status(206).json({ msg: "no admin_name provided" });
+  db.promise().query(`CALL get_admin_log(?)`, [admin_name])
+    .then((result) => {
+      res.status(200).json(result[0][0]);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ msg: err.sqlMessage });
+    });
 }
 
 module.exports = {

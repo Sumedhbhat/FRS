@@ -21,7 +21,7 @@ router.route("/users/create").post(createUser);
 router.route("/dashboard").get(getUsers);
 router.route("/users/sort").post(getSortedUsers);
 router.route("/users/capturelog").get(getUserCaptureLog);
-router.route("/adminlog").get(getAdminLog);
+router.route("/adminlog").post(getAdminLog);
 router
   .route("/users/:user_id?")
   .get(getUser)

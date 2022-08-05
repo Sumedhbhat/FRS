@@ -143,7 +143,7 @@ BEGIN
   FROM `user_capture_log` uc
   JOIN `user` ut
   ON ut.`user_id` = uc.`user_id`
-  WHERE uc.`recognition_status` = "TRUE";
+  WHERE uc.`recognition_status` = "TRUE"
   ORDER BY `date_time` DESC
   LIMIT 20;
 END$$
