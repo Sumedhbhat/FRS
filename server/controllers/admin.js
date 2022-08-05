@@ -42,6 +42,7 @@ const adminLogin = async (req, res) => {
       } else {
         if (password === result[0][0].password) {
           alog(username, "Admin Login successful");
+          db.execute("INSERT INTO admin_log (change_by, change_on, change_type) VALUE (?, ?, ?)", [username, "SELF", "LOGIN"]);
           res.status(200).json({ msg: "login successful" });
         } else {
           alog(
@@ -407,6 +408,30 @@ const getFilteredUsers = async (req, res) => {
     });
 };
 
+const getUserCaptureLog = async (req, res) => {
+  db.promise().query("CALL get_capture_log()")
+    .then((result) => {
+      res.status(200).json(result[0][0]);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ msg: err.sqlMessage });
+    });
+}
+
+const getAdminLog = async (req, res) => {
+  const {admin_name} = req.body;
+  if (!admin_name) return res.status(206).json({ msg: "no admin_name provided" });
+  db.promise().query(`CALL get_admin_log(?)`, [admin_name])
+    .then((result) => {
+      res.status(200).json(result[0][0]);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ msg: err.sqlMessage });
+    });
+}
+
 module.exports = {
   adminLogin,
   recognizeFace,
@@ -417,4 +442,6 @@ module.exports = {
   getUsers,
   getSortedUsers,
   getFilteredUsers,
+  getUserCaptureLog,
+  getAdminLog
 };

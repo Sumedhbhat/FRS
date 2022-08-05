@@ -75,7 +75,6 @@ else:
             if(face_distances[best_match] < threshold):
                 if(known_faces[best_match] not in already_found_user_ids):
                     already_found_user_ids.append(known_faces[best_match])
-                    cv2.putText(img, "Accepted", (x_min, y_min-10), fontType, scale, col_acp, recThic, cv2.LINE_AA)
                     cv2.rectangle(img, (x_min, y_min),(x_max, y_max), col_acp, recThic)
                     mycursor.execute("CALL record_user_capture(%s, %s, %s)", [imgname, known_faces[best_match], in_out])
                     myresult = mycursor.fetchall()
@@ -89,7 +88,7 @@ else:
                         "department": myresult[0][6],
                         "date_created": myresult[0][7].strftime("%Y-%m-%d %H:%M:%S")
                     })
-                    cv2.putText(img, myresult[0][2], (x_min, int(y_max + scale*30)), fontType, scale, col_acp, fontThic)
+                    cv2.putText(img, myresult[0][2], (x_min, int(y_max + scale*30)), fontType, scale, col_acp, fontThic, cv2.LINE_AA)
             else:
                 cv2.rectangle(img, (x_min, y_min), (x_max, y_max), col_rej, recThic)
                 mycursor.execute("CALL record_user_capture(%s, %s, %s)", [imgname, "unrecognized", in_out])

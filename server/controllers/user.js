@@ -10,6 +10,7 @@ const tempFolder = path.join(user_imagesFolder, "temp");
 const deletesFolder = path.join(user_imagesFolder, "deletes");
 const capturesFolder = path.join(user_imagesFolder, "captures");
 const attendanceFolder = path.join(user_imagesFolder, "attendance");
+const output_json = path.join(__dirname, "..", "..", "outputs","attendance_outputs.json");
 
 const clog = require("../utils/captureLogger");
 
@@ -117,7 +118,27 @@ const attendanceRecognition = async (req, res) => {
         .status(400)
         .json({ msg: "something went wrong with python script" });
     }
-  return res.status(200).send(pyres);
+  res.status(200).send(pyres);
+
+  pyres["time of upload"] = new Date().toLocaleString();
+  pyres["images"] = imgLocs;
+  
+  fs.readFile(output_json, function (err, data) {
+    if(err)
+      console.log(err);
+    else {
+      var json = JSON.parse(data);
+      json.push(pyres);
+      json = JSON.stringify(json)
+        .replaceAll("{", "\n{\n")
+        .replaceAll(',"', ',\n"')
+        .replaceAll('["', '[\n"')
+        .replaceAll('"]', '"\n]')
+        .replaceAll(']}', ']\n}')
+        .replace('}]', '}\n]');
+      fs.writeFileSync(output_json, json);
+    }
+  });
 }
 
 module.exports = {

@@ -62,7 +62,7 @@ CREATE TABLE `FRS`.`user_capture_log` (
 
 /* Trigger for creating log on insert user */
 DELIMITER $$
-CREATE DEFINER=`vedanta`@`localhost` TRIGGER `create_log_on_insert` AFTER INSERT ON `user` FOR EACH ROW BEGIN
+CREATE TRIGGER `create_log_on_insert` AFTER INSERT ON `user` FOR EACH ROW BEGIN
 	INSERT INTO `admin_log` (`change_by`, `change_on`, `change_type`)
     VALUE (NEW.`last_modified_by`, NEW.`user_id`, "INSERT");
     INSERT INTO `user_change_log` (`change_by`, `change_type`, `user_id`, `base_img`, `img_ext`, `name`, `mob_no`, `gender`, `city`, `department`, `date_created`) 
@@ -72,7 +72,7 @@ DELIMITER ;
 
 /* Trigger for creating log on update user */
 DELIMITER $$
-CREATE DEFINER=`vedanta`@`localhost` TRIGGER `create_log_on_update` AFTER UPDATE ON `user` FOR EACH ROW BEGIN
+CREATE TRIGGER `create_log_on_update` AFTER UPDATE ON `user` FOR EACH ROW BEGIN
     IF (NEW.`base_img` != OLD.`base_img` OR NEW.`name` != OLD.`name` OR NEW.`mob_no` != OLD.`mob_no` OR NEW.`gender` != OLD.`gender` OR NEW.`city` != OLD.`city` OR NEW.`department` != OLD.`department`) THEN
         INSERT INTO `admin_log` (`change_by`, `change_on`, `change_type`)
 		VALUE (NEW.`last_modified_by`, NEW.`user_id`, "UPDATE");
@@ -84,7 +84,7 @@ DELIMITER ;
 
 /* Trigger for creating log on delete user */
 DELIMITER $$
-CREATE DEFINER = CURRENT_USER TRIGGER `FRS`.`create_log_on_delete` AFTER DELETE ON `user` FOR EACH ROW
+CREATE TRIGGER `FRS`.`create_log_on_delete` AFTER DELETE ON `user` FOR EACH ROW
 BEGIN
 	INSERT INTO `admin_log` (`change_by`, `change_on`, `change_type`)
 	VALUE (OLD.`last_modified_by`, OLD.`user_id`, "DELETE");
@@ -95,9 +95,6 @@ DELIMITER ;
 
 /* Get user view */
 CREATE 
-    ALGORITHM = UNDEFINED 
-    DEFINER = `vedanta`@`localhost` 
-    SQL SECURITY DEFINER
 VIEW `FRS`.`get_user` AS
     SELECT 
 		`FRS`.`user`.`user_id` AS `user_id`,
@@ -113,7 +110,7 @@ VIEW `FRS`.`get_user` AS
 
 /* Delete user procedure */
 DELIMITER $$
-CREATE DEFINER=`vedanta`@`localhost` PROCEDURE `delete_user`(IN usr_id VARCHAR(36), IN last_modifier VARCHAR(20))
+CREATE PROCEDURE `delete_user`(IN usr_id VARCHAR(36), IN last_modifier VARCHAR(20))
 BEGIN
 	UPDATE `user` SET `last_modified_by` = last_modifier WHERE `user_id` = usr_id;
 	SELECT `base_img` FROM `user` WHERE `user_id` = usr_id;
@@ -135,6 +132,32 @@ BEGIN
 		INSERT INTO `user_capture_log` (`img_name`, `recognition_status`, `in/out`) 
     VALUES (img, "FALSE", in_sts);
   END IF;
+END$$
+DELIMITER ;
+
+/* Get user capture log procedure */
+DELIMITER $$
+CREATE PROCEDURE `get_capture_log` ()
+BEGIN
+  SELECT uc.`user_id`, ut.`name`, uc.`in/out`, uc.`date_time`
+  FROM `user_capture_log` uc
+  JOIN `user` ut
+  ON ut.`user_id` = uc.`user_id`
+  WHERE uc.`recognition_status` = "TRUE"
+  ORDER BY `date_time` DESC
+  LIMIT 20;
+END$$
+DELIMITER ;
+
+/* Get admin log procedure */
+DELIMITER $$
+CREATE PROCEDURE `get_admin_log` (IN admin_name VARCHAR(20))
+BEGIN
+	SELECT `change_on`, `change_type`, `change_time`
+  FROM `admin_log`
+  WHERE `change_by` = admin_name
+  ORDER BY `change_time` DESC
+  LIMIT 20;
 END$$
 DELIMITER ;
 

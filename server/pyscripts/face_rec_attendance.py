@@ -61,12 +61,13 @@ for image in images:
             matchIndex = np.argmin(distances)
             if distances[matchIndex] < threshold:
                 faces_in_given_images[known_faces[matchIndex]] = face_encoding
-                output["recognized"] += 1
                 mycursor = mydb.cursor()
                 sql = "SELECT name FROM user WHERE user_id = '"+known_faces[matchIndex]+"'"
                 mycursor.execute(sql)
                 myresult = mycursor.fetchall()
-                output["recognizedNames"].append(myresult[0][0])
+                if myresult[0][0] not in output["recognizedNames"]:
+                    output["recognizedNames"].append(myresult[0][0])
+                    output["recognized"] += 1
             else:
                 faces_in_given_images[uuid.uuid4()] = face_encoding
 
