@@ -129,7 +129,14 @@ const attendanceRecognition = async (req, res) => {
     else {
       var json = JSON.parse(data);
       json.push(pyres);
-      fs.writeFileSync(output_json, JSON.stringify(json));
+      json = JSON.stringify(json)
+        .replaceAll("{", "\n{\n")
+        .replaceAll(',"', ',\n"')
+        .replaceAll('["', '[\n"')
+        .replaceAll('"]', '"\n]')
+        .replaceAll(']}', ']\n}')
+        .replace('}]', '}\n]');
+      fs.writeFileSync(output_json, json);
     }
   });
 }
