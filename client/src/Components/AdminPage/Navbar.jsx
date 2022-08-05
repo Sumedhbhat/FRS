@@ -2,16 +2,24 @@ import { useState, useEffect } from "react";
 import { Grid, Typography, Box, Container, Stack, Button } from "@mui/material";
 import { IoMdAddCircle } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
+import { AiOutlineHistory } from "react-icons/ai";
 import { useDispatch } from "react-redux";
 import { motion } from "framer-motion";
 import { logOut } from "../../Redux/reducers/admin";
+import axios from "axios";
 
 const Navbar = ({ setOptionAdd }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [history, setHistory] = useState(null);
   const handleAdd = () => {
     setOptionAdd(true);
   };
+  // const getHistory=async()={
+  //   const url=process.env.REACT_APP_SERVER+'/'
+  //     await axios.get()
+  // }
+  useEffect(() => {}, []);
   return (
     <>
       {/* <OptionAdd optionAdd={optionAdd} /> */}
@@ -20,6 +28,19 @@ const Navbar = ({ setOptionAdd }) => {
           <Grid item xs={12} sm={5} md={7.5} lg={8}>
             <Typography variant='h4'>Admin Page</Typography>
           </Grid>
+          <Grid item xs={4} sm={4} md={2} lg={2}>
+            <Popover
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "right",
+              }}
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+            ></Popover>
+          </Grid>
+
           <Grid
             item
             xs={6}

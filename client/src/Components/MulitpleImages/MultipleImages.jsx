@@ -94,7 +94,7 @@ const MultipleImages = () => {
                 {"Number of People Recognized"} :{result.recognized}
               </Typography>
               <Typography  variant='h5' align='center'>
-                {"Names of People Found"} :{result.length>0?result.recognizedNames.join(' , '):"No People Found"}
+                {"Names of People Found"} :{result.recognizedNames.length>0?result.recognizedNames.join(' , '):"No People Found"}
               </Typography>
               </>
             }
