@@ -135,6 +135,32 @@ BEGIN
 END$$
 DELIMITER ;
 
+/* Get user capture log procedure */
+DELIMITER $$
+CREATE PROCEDURE `get_capture_log` ()
+BEGIN
+  SELECT uc.`user_id`, ut.`name`, uc.`in/out`, uc.`date_time`
+  FROM `user_capture_log` uc
+  JOIN `user` ut
+  ON ut.`user_id` = uc.`user_id`
+  WHERE uc.`recognition_status` = "TRUE";
+  ORDER BY `date_time` DESC
+  LIMIT 20;
+END$$
+DELIMITER ;
+
+/* Get admin log procedure */
+DELIMITER $$
+CREATE PROCEDURE `get_admin_log` (IN admin_name VARCHAR(20))
+BEGIN
+	SELECT `change_on`, `change_type`, `change_time`
+  FROM `admin_log`
+  WHERE `change_by` = admin_name
+  ORDER BY `change_time` DESC
+  LIMIT 20;
+END$$
+DELIMITER ;
+
 /* Inserting dummy admin values */
 INSERT INTO `FRS`.`admin` (`username`, `password`) VALUES ('vedansh', 'password');
 INSERT INTO `FRS`.`admin` (`username`, `password`) VALUES ('sumedh', 'sudu_1000');
