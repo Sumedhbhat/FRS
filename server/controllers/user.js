@@ -119,6 +119,14 @@ const attendanceRecognition = async (req, res) => {
         .json({ msg: "something went wrong with python script" });
     }
   res.status(200).send(pyres);
+  
+  pyres["recognizedNames"] = [];
+
+  pyres["recognizedPeople"].forEach((person) => {
+    pyres["recognizedNames"].push(person["name"]);
+  });
+  
+  delete pyres["recognizedPeople"];
 
   pyres["time of upload"] = new Date().toLocaleString();
   pyres["images"] = imgLocs;
