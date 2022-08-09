@@ -1,1 +1,48 @@
-[]
+[
+{
+"uploaded":1,
+"detected":1,
+"recognized":1,
+"recognizedNames":[
+"Matt LeBlanc"
+],
+"time of upload":"8/8/2022, 7:10:29 pm",
+"images":[
+"/home/sumedh/Documents/FRS/user_images/attendance/35f2839b-9675-4f7f-adef-2713bc844373.jpeg"
+]
+},
+{
+"uploaded":1,
+"detected":0,
+"recognized":0,
+"recognizedNames":[],
+"time of upload":"8/8/2022, 7:33:34 pm",
+"images":[
+"/home/sumedh/Documents/FRS/user_images/attendance/36d2d615-f913-4996-a877-45fd235b923b.png"
+]
+},
+{
+"uploaded":1,
+"detected":1,
+"recognized":1,
+"recognizedNames":[
+"Matt LeBlanc"
+],
+"time of upload":"8/8/2022, 7:35:00 pm",
+"images":[
+"/home/sumedh/Documents/FRS/user_images/attendance/ff97aa58-b724-4a3f-9016-0663eb8dfea8.png"
+]
+},
+{
+"uploaded":1,
+"detected":1,
+"recognized":1,
+"recognizedNames":[
+"Matt LeBlanc"
+],
+"time of upload":"9/8/2022, 6:51:42 pm",
+"images":[
+"/home/sumedh/Documents/FRS/user_images/attendance/bf4f2fb7-851d-4e4c-b464-1069c7bb57d9.jpeg"
+]
+}
+]
