@@ -35,7 +35,7 @@ fe_file = os.path.join(frs_folder, fe_file_loc)
 
 images = str(sys.argv[1]).split(",")
 
-output = {"uploaded": len(images), "detected": 0, "recognized": 0, "recognizedNames": []}
+output = {"uploaded": len(images), "detected": 0, "recognized": 0, "recognizedPeople": []}
 
 with open(fe_file, 'r') as f:
     face_emb = json.load(f)
@@ -44,7 +44,7 @@ known_faces = list(face_emb.keys())
 known_face_encodings = list(face_emb.values())
 
 faces_in_given_images = {}
-
+rec_imgs = []
 
 for image in images:
     given_image = fr.load_image_file(image)
@@ -62,11 +62,12 @@ for image in images:
             if distances[matchIndex] < threshold:
                 faces_in_given_images[known_faces[matchIndex]] = face_encoding
                 mycursor = mydb.cursor()
-                sql = "SELECT name FROM user WHERE user_id = '"+known_faces[matchIndex]+"'"
+                sql = "SELECT name, base_img FROM user WHERE user_id = '"+known_faces[matchIndex]+"'"
                 mycursor.execute(sql)
                 myresult = mycursor.fetchall()
-                if myresult[0][0] not in output["recognizedNames"]:
-                    output["recognizedNames"].append(myresult[0][0])
+                if myresult[0][1] not in rec_imgs:
+                    output["recognizedPeople"].append({"name": myresult[0][0], "img": myresult[0][1]})
+                    rec_imgs.append(myresult[0][1])
                     output["recognized"] += 1
             else:
                 faces_in_given_images[uuid.uuid4()] = face_encoding
