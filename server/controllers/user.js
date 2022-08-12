@@ -27,7 +27,7 @@ const recface_attendance = path.join(pyscripts, "face_rec_attendance.py");
 const recognizeUser = async (req, res) => {
   var { base64img, in_out_status } = req.body;
 
-  if (!base64img) {
+  if (!base64img && !req.files.image) {
     return res.status(206).json({ msg: "no image recieved" });
   }
 
@@ -35,7 +35,12 @@ const recognizeUser = async (req, res) => {
     return res.status(400).send({ msg: "Invalid in_out_status" });
   }
 
-  var extension = "." + base64img.substring(11, base64img.indexOf(";"));
+  var extension = ".";
+  if (req.files && req.files.image) {
+    extension += req.files.image.mimetype.substring(6);
+  } else {
+    extension += base64img.substring(11, base64img.indexOf(";"));
+  }
   if (extension !== ".png" && extension !== ".jpeg") {
     return res.status(415).json({ msg: "unsupported filetype" });
   }
@@ -43,16 +48,24 @@ const recognizeUser = async (req, res) => {
 
   const imgpath = path.join(capturesFolder, img);
 
-  const base64str = base64img.substring(base64img.indexOf(",") + 1);
-  fs.writeFileSync(imgpath, base64str, "base64");
+  if (base64img) {
+    const base64str = base64img.substring(base64img.indexOf(",") + 1);
+    fs.writeFileSync(imgpath, base64str, "base64");
+  } else {
+    fs.writeFileSync(imgpath, req.files.image.data);
+  }
 
   var pyres = 0;
 
   const process = spawnSync("python3", [recface, imgpath, in_out_status]);
+  var result_from_python = String(process.stdout).split("\n");
+  result_from_python = result_from_python[result_from_python.length - 2];
   try {
-    pyres = JSON.parse(String(process.stdout).replace(/'/g, '"'));
+    pyres = JSON.parse(result_from_python.replace(/'/g, '"'));
   } catch (e) {
     console.log(e);
+    console.log(String(process.stderr));
+    console.log(String(process.stdout));
     return res
       .status(400)
       .json({ msg: "something went wrong with python script" });

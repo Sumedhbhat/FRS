@@ -5,6 +5,7 @@ import json
 import numpy as np
 import face_recognition as fr
 import pymysql
+import liveness_scripts.fr_helper as fr_helper
 
 frs_folder = os.path.abspath(os.path.join(__file__, os.pardir, os.pardir, os.pardir))
 
@@ -43,7 +44,9 @@ already_found_user_ids = []
 img = cv2.imread(imgloc)
 
 given_image = fr.load_image_file(imgloc)
-face_locations = fr.face_locations(given_image, model="hog")
+# face_locations = fr.face_locations(given_image, model="hog")
+face_locations = fr_helper.detect_faces(given_image)
+face_liveness = fr_helper.detect_liveness(given_image, face_locations)
 face_encoding = fr.face_encodings(given_image, face_locations)
 
 if len(face_locations) == 0:
@@ -86,7 +89,9 @@ else:
                         "gender": myresult[0][4],
                         "city": myresult[0][5],
                         "department": myresult[0][6],
-                        "date_created": myresult[0][7].strftime("%Y-%m-%d %H:%M:%S")
+                        "date_created": myresult[0][7].strftime("%Y-%m-%d %H:%M:%S"),
+                        "face_liveness_status": face_liveness[i]["liveness_status"],
+                        "face_liveness_confidence": face_liveness[i]["confidence"]
                     })
                     cv2.putText(img, myresult[0][2], (x_min, int(y_max + scale*30)), fontType, scale, col_acp, fontThic, cv2.LINE_AA)
             else:
