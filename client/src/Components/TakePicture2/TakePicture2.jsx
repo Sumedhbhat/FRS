@@ -63,6 +63,8 @@ const TakePicture2 = () => {
       allUsers.slice(-1)[0].user_id != users.slice(-1)[0].user_id
     ) {
       setAllUsers((prev) => prev.concat(users));
+    } else if (users !== null && users.length !== 0) {
+      setAllUsers((prev) => [...prev.slice(0, -1 * users.length), ...users]);
     }
     // console.log(allUsers);
   }, [users]);
