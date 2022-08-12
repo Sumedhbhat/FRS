@@ -52,6 +52,7 @@ export const recognizeUser2 = createAsyncThunk(
       })
       .then((res) => {
         console.log(res);
+        console.log(res.data.face_liveness_confidence);
         if (res.status === 200) {
           return {
             result: true,
@@ -65,6 +66,8 @@ export const recognizeUser2 = createAsyncThunk(
             result: false,
             users: null,
             error: res.data.msg,
+            live_status: res.data.face_liveness_status,
+            live_confidence: res.data.face_liveness_confidence,
           };
         }
       })

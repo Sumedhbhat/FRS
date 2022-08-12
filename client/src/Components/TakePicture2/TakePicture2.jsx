@@ -63,9 +63,6 @@ const TakePicture2 = () => {
       allUsers.slice(-1)[0].user_id != users.slice(-1)[0].user_id
     ) {
       setAllUsers((prev) => prev.concat(users));
-      console.log(users);
-      console.log(allUsers.slice(-1 * users.length));
-      console.log(allUsers.slice(-1 * users.length) == users);
     }
     // console.log(allUsers);
   }, [users]);
@@ -153,7 +150,7 @@ const TakePicture2 = () => {
                 <CircularProgress />
               </>
             )}
-            {faceDetected && detectionStatus && loading&& time2> 0 && (
+            {faceDetected && detectionStatus && loading && time2 > 0 && (
               <>
                 <Typography variant='h6' align='center'>
                   Please wait for a moment before the next picture {time2}
@@ -164,6 +161,18 @@ const TakePicture2 = () => {
               <>
                 <Typography variant='h6' align='center'>
                   Taking a picture in {time}
+                </Typography>
+              </>
+            )}
+            {allUsers !== null && allUsers.length !== 0 && (
+              <>
+                <Typography variant='h6' align='center'>
+                  Face liveness :{" "}
+                  {allUsers[allUsers.length - 1].face_liveness_status}
+                </Typography>
+                <Typography variant='h6' align='center'>
+                  Face liveness confidence :
+                  {allUsers[allUsers.length - 1].face_liveness_confidence}
                 </Typography>
               </>
             )}
@@ -192,6 +201,12 @@ const TakePicture2 = () => {
                         : user.gender === "F"
                         ? "Female"
                         : "You have preferred not to say"}
+                    </Typography>
+                    <Typography variant='body1'>
+                      Face Liveness : {user.face_liveness_status}
+                    </Typography>
+                    <Typography variant='body1'>
+                      Face Liveness Confidence : {user.face_liveness_confidence}
                     </Typography>
                   </AccordionDetails>
                 </Accordion>
