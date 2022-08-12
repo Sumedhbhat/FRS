@@ -45,23 +45,25 @@ const MultipleImages = () => {
           console.log(res.data);
           setLoading(false);
         })
-        .catch((err) => setError(err.response.data.msg));
-      // setResult((prev) =>
-      //   prev.map((p, index) => {
-      //     return index === 3 ? [p[index][0], p[index][1].join(",")] : p[index];
-      //   })
-      // );
+        .catch((err) => {
+          setError(err.response.data.msg);
+          setLoading(false);
+        });
     } else {
       setResult(null);
       setError(null);
       setFile("");
+      setShowImage(false);
     }
   };
 
   return (
     <>
+      <Typography variant="h4" p={3}>
+        Multiple Images Recognition
+      </Typography>
       <Grid container>
-        <Grid item xs={showImage ? 7 : 12}>
+        <Grid item xs={showImage ? 9 : 12}>
           <Stack mt={2} spacing={3} justifyContent="center">
             <div style={{ display: "flex", justifyContent: "center" }}>
               <FileBase64
@@ -101,25 +103,34 @@ const MultipleImages = () => {
                 color="primary"
                 onClick={handleUpload}
               >
-                {file !== "" ? "Reset" : "Upload"}
+                {showImage ? "Reset" : "Upload"}
               </Button>
             </Box>
           </Stack>
         </Grid>
-        <Grid item xs={showImage ? 4 : 0}>
+        <Grid item xs={showImage ? 2.5 : 0}>
+          {showImage && (
+            <Typography variant="h6" mb={3}>
+              The Recognized people in the images are:
+            </Typography>
+          )}
           <Stack spacing={3} justifyContent="center">
             {result !== null &&
+              showImage &&
               result.recognizedPeople.map((p, i) => {
                 return (
-                  <Box key={i}>
-                    <Avatar
-                      src={require(`../../../../user_images/uploads/${p.img}`)}
-                      alt={p.name}
-                    />
-                    <Typography key={i} variant="h5" align="center">
-                      {p.name}
-                    </Typography>
-                  </Box>
+                  <Grid container key={i} justifyContent="start">
+                    <Grid item xs={2}>
+                      <Avatar
+                        src={require(`../../../../user_images/uploads/${p.img}`)}
+                        alt={p.name}
+                        mr={3}
+                      />
+                    </Grid>
+                    <Grid item xs>
+                      <Typography variant="h6">{p.name}</Typography>
+                    </Grid>
+                  </Grid>
                 );
               })}
           </Stack>
