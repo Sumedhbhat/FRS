@@ -1,15 +1,12 @@
 import os
 import sys
-import cv2
 import json
-import numpy as np
-import face_recognition as fr
 import pymysql
 import liveness_scripts.fr_helper as fr_helper
 
 frs_folder = os.path.abspath(os.path.join(__file__, os.pardir, os.pardir, os.pardir))
 
-db_config_file = os.path.join(frs_folder, "server/db/db_config.json")
+db_config_file = os.path.join(frs_folder, "server", "db", "db_config.json")
 
 with open(db_config_file, 'r') as f:
     db_configs = json.load(f)
@@ -25,9 +22,7 @@ mydb = pymysql.connect(host=host, user=user, password=password, database=databas
 imgloc = str(sys.argv[1])
 in_out = str(sys.argv[2])
 
-imgname = imgloc[imgloc.rindex("/")+1:]
-
-config_file = os.path.join(frs_folder, "server/pyscripts/config.json")
+config_file = os.path.join(frs_folder, "server", "pyscripts", "config.json")
 
 with open(config_file, 'r') as f:
     configs = json.load(f)
@@ -38,69 +33,12 @@ fe_file_loc = configs["fe_file_loc"]
 
 fe_file = os.path.join(frs_folder, fe_file_loc)
 
-output = {"result":[]}
-already_found_user_ids = []
+face_locations = fr_helper.detect_faces(imgloc)
+face_liveness = fr_helper.detect_liveness(imgloc, face_locations)
 
-img = cv2.imread(imgloc)
-
-given_image = fr.load_image_file(imgloc)
-# face_locations = fr.face_locations(given_image, model="hog")
-face_locations = fr_helper.detect_faces(given_image)
-face_liveness = fr_helper.detect_liveness(given_image, face_locations)
-face_encoding = fr.face_encodings(given_image, face_locations)
-
-if len(face_locations) == 0:
-    output['errmsg'] = 'no face'
-else:
-
-    with open(fe_file, 'r') as f:
+with open(fe_file, 'r') as f:
         face_emb = json.load(f)
 
-    known_faces = list(face_emb.keys())
-    known_face_encodings = list(face_emb.values())
+output = fr_helper.recognize_faces(imgloc, face_locations, face_liveness, face_emb, mydb, threshold, in_out)
 
-    for i in range(len(face_encoding)):
-        y_min, x_max, y_max, x_min = face_locations[i]
-        fontType = cv2.FONT_HERSHEY_TRIPLEX
-        recThic = 3
-        fontThic = 1
-        col_acp = (0, 255, 0)
-        col_rej = (0, 0, 255)
-
-        scale = (x_max-x_min)/130
-
-        face_distances = fr.face_distance(
-            known_face_encodings, face_encoding[i])
-        best_match = np.argmin(face_distances)
-        
-        with mydb.cursor() as mycursor:
-
-            if(face_distances[best_match] < threshold):
-                if(known_faces[best_match] not in already_found_user_ids):
-                    already_found_user_ids.append(known_faces[best_match])
-                    cv2.rectangle(img, (x_min, y_min),(x_max, y_max), col_acp, recThic)
-                    mycursor.execute("CALL record_user_capture(%s, %s, %s)", [imgname, known_faces[best_match], in_out])
-                    myresult = mycursor.fetchall()
-                    output["result"].append({
-                        "user_id": known_faces[best_match],
-                        "img": myresult[0][1],
-                        "name": myresult[0][2],
-                        "mob_no": myresult[0][3],
-                        "gender": myresult[0][4],
-                        "city": myresult[0][5],
-                        "department": myresult[0][6],
-                        "date_created": myresult[0][7].strftime("%Y-%m-%d %H:%M:%S"),
-                        "face_liveness_status": face_liveness[i]["liveness_status"],
-                        "face_liveness_confidence": face_liveness[i]["confidence"]
-                    })
-                    cv2.putText(img, myresult[0][2], (x_min, int(y_max + scale*30)), fontType, scale, col_acp, fontThic, cv2.LINE_AA)
-            else:
-                cv2.rectangle(img, (x_min, y_min), (x_max, y_max), col_rej, recThic)
-                mycursor.execute("CALL record_user_capture(%s, %s, %s)", [imgname, "unrecognized", in_out])
-                myresult = mycursor.fetchall()
-                cv2.putText(img, "no match", (x_min, int(y_max + scale*30)), fontType, scale, col_rej, fontThic)
-
-            mydb.commit()
-
-cv2.imwrite(imgloc, img)
 print(output)
