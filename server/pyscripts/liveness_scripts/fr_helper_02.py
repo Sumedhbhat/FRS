@@ -1,9 +1,19 @@
 # imports
 import face_recognition as fr
 import numpy as np
+import json
 import cv2
 import os
+from datetime import datetime
+import time
 from tensorflow import keras
+import joblib
+import pickle
+# supress warnings
+import tensorflow as tf
+tf.get_logger().setLevel('ERROR')
+import warnings 
+warnings.filterwarnings("ignore")
 
 def detect_faces(img_path_to_img):
     # function to detect faces in given image
@@ -22,7 +32,7 @@ def detect_faces(img_path_to_img):
     return face_locations
 
 
-def detect_liveness(img_path_to_img, face_locations):
+def detect_liveness_nn(img_path_to_img, face_locations):
     # function to detect liveness of faces
     # outputs a dict with keys=faces and values being face liveness and confidence
     
@@ -58,13 +68,122 @@ def detect_liveness(img_path_to_img, face_locations):
         preds = model.predict(faces[index])[0]
         j = np.argmax(preds)
         if j == 0: # spoof
-            face_liveness.append({'liveness_status': 'spoof', 'confidence': preds[j]})
+            face_liveness.append({'liveness_status_nn': 'spoof', 'confidence_nn': np.round(preds[j],4)})
         else: # j == 1 implies live
-            face_liveness.append({'liveness_status': 'live', 'confidence': preds[j]})
+            face_liveness.append({'liveness_status_nn': 'live', 'confidence_nn': np.round(preds[j],4)})
         
     return face_liveness
 
-def recognize_faces(imgloc, face_locations, face_liveness, face_emb, mydb, threshold, in_out):
+
+def calc_hist(img):
+    histogram = [0] * 3
+    for j in range(3):
+        histr = cv2.calcHist([img], [j], None, [256], [0, 256])
+        histr *= 255.0 / histr.max()
+        histogram[j] = histr
+    return np.array(histogram)
+    
+    
+def load_model(att_type):
+    
+    # attack type specifier - 'print', 'replay'
+    
+    if att_type == 'print':
+        model_name = 'print_attack_model.pkl'
+    else:
+        model_name = 'replay_attack_model.pkl'
+    # load model
+    clf = None
+    loc = os.path.dirname(__file__)
+    
+    with open(os.path.join(loc, model_name), 'rb') as file:
+        clf = pickle.load(file)
+    
+    return clf
+
+
+def detect_liveness_hist(img_path_to_img, face_locations, att_type='replay'):
+    # function to detect liveness of faces
+    # outputs a dict with keys=faces and values being face liveness and confidence
+    
+    # get image
+    if type(img_path_to_img) == str:
+        img = fr.load_image_file(img_path_to_img)
+    else:
+        img = img_path_to_img
+        
+    # face extraction 
+    faces = []   
+    img_mode = 'BGR'
+    for ii, face in enumerate(face_locations):
+        
+        w = face[2] - face[0]
+        h = face[1] - face[3]
+        mul_fac = 0.1
+        inc_w = int(w * mul_fac)
+        inc_h = int(h * mul_fac)
+        
+        #print(w, h, inc_w, inc_h)
+        
+        if img_mode == 'RGB':
+            faces.append(img[face[0]-inc_w:face[2]+inc_w, face[3]-inc_h:face[1]+inc_h])
+        elif img_mode == 'BGR':
+            faces.append(img[face[0]-inc_w:face[2]+inc_w, face[3]-inc_h:face[1]+inc_h, ::-1]) # invertion
+    
+    sample_number = 1
+    count = 0
+    measures = np.zeros(sample_number, dtype=float)
+    measures[count%sample_number]=0
+    
+    # initialize a dict
+    face_liveness = []
+
+    # load the liveness detector model
+    clf = load_model(att_type)
+    
+    # loop over all faces
+    for index, face in enumerate(faces):
+        
+        # show face
+        show_faces = 0
+        if show_faces == 1:
+            cv2.imshow('ext img', faces[face])
+            cv2.waitKey(0)
+            cv2.destroyAllWindows()
+    
+        
+        img_ycrcb = cv2.cvtColor(faces[index], cv2.COLOR_BGR2YCR_CB)
+        img_luv = cv2.cvtColor(faces[index], cv2.COLOR_BGR2LUV)
+        # calc hist
+        ycrcb_hist = calc_hist(img_ycrcb)
+        luv_hist = calc_hist(img_luv)
+
+        feature_vector = np.append(ycrcb_hist.ravel(), luv_hist.ravel())
+        feature_vector = feature_vector.reshape(1, len(feature_vector))
+        # predict prob
+        prediction = clf.predict_proba(feature_vector)
+        prob = prediction[0][1]
+
+        measures[count % sample_number] = prob
+
+        count+=1
+        if att_type == 'print':
+            if np.mean(measures) >= 0.5:
+                face_liveness.append({'liveness_status_hist': 'spoof', 'confidence_hist': np.round(measures,4)[0]})
+            else:
+                face_liveness.append({'liveness_status_hist': 'live', 'confidence_hist': np.round(measures,4)[0]})
+        else: # attack type == 'replay'
+            if np.mean(measures) <= 0.5:
+                face_liveness.append({'liveness_status_hist': 'spoof', 'confidence_hist': np.round(measures,4)[0]})
+            else:
+                face_liveness.append({'liveness_status_hist': 'live', 'confidence_hist': np.round(measures,4)[0]})
+        
+        
+    return face_liveness
+
+
+
+def recognize_faces(imgloc, face_locations, face_liveness, face_liveness1, face_emb, mydb, threshold, in_out):
     output = {"result":[]}
     already_found_user_ids = []
 
@@ -111,8 +230,10 @@ def recognize_faces(imgloc, face_locations, face_liveness, face_emb, mydb, thres
                             "city": myresult[0][5],
                             "department": myresult[0][6],
                             "date_created": myresult[0][7].strftime("%Y-%m-%d %H:%M:%S"),
-                            "face_liveness_status": face_liveness[i]["liveness_status"],
-                            "face_liveness_confidence": face_liveness[i]["confidence"]
+                            "face_liveness_status_nn": face_liveness[i]["liveness_status_nn"],
+                            "face_liveness_confidence_nn": face_liveness[i]["confidence_nn"],
+                            "face_liveness_status_hist": face_liveness1[i]["liveness_status_hist"],
+                            "face_liveness_confidence_hist": face_liveness1[i]["confidence_hist"]
                         })
                         cv2.putText(cv2_img, myresult[0][2], (x_min, int(y_max + scale*30)), fontType, scale, col_acp, fontThic, cv2.LINE_AA)
                 else:
