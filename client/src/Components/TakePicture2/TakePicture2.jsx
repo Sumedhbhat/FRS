@@ -15,13 +15,7 @@ import {
 import * as tf from "@tensorflow/tfjs";
 import { MdExpandMore } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  addImage,
-  resetImage,
-  recognizeUser,
-  reset,
-  recognizeUser2,
-} from "../../Redux/reducers/recognizeReducer";
+import { recognizeUser2 } from "../../Redux/reducers/recognizeReducer";
 
 const TakePicture2 = () => {
   const dispatch = useDispatch();
@@ -32,7 +26,6 @@ const TakePicture2 = () => {
   const error = useSelector((state) => state.recognize.error);
   const result = useSelector((state) => state.recognize.result);
   const users = useSelector((state) => state.recognize.users);
-  const [prev, setPrev] = useState(null);
   const [allUsers, setAllUsers] = useState(null);
   const [detectionStatus, setDetectionStatus] = useState(false);
   const [time, setTime] = useState(0);
@@ -66,7 +59,6 @@ const TakePicture2 = () => {
     } else if (users !== null && users.length !== 0) {
       setAllUsers((prev) => [...prev.slice(0, -1 * users.length), ...users]);
     }
-    // console.log(allUsers);
   }, [users]);
 
   useEffect(() => {
@@ -85,15 +77,18 @@ const TakePicture2 = () => {
           setTime2((prev) => prev - 1);
         };
         let interval2 = setInterval(set2, 1000);
-        if (loading == false) {
-          setTime2(5);
-          setTime(3);
-          setTimeout(() => {
-            setDetectionStatus(true);
-            clearInterval(interval2);
-            setFaceDetected(false);
-          }, 5000);
-        }
+        const insideLoop = () => {
+          if (loading === false) {
+            setTime2(5);
+            setTime(3);
+            setTimeout(() => {
+              setDetectionStatus(true);
+              clearInterval(interval2);
+              setFaceDetected(false);
+            }, 5000);
+          }
+        };
+        setTimeout(insideLoop, 2000);
       }, 4000);
     }
   }, [faceDetected, webcamRef]);
@@ -131,18 +126,18 @@ const TakePicture2 = () => {
   };
   return (
     <Stack spacing={2} py={3}>
-      <Typography variant='h3'>Face Recognition</Typography>
-      <Grid container spacing={2} justifyContent='center'>
+      <Typography variant="h3">Face Recognition</Typography>
+      <Grid container spacing={2} justifyContent="center">
         <Grid item xs={7}>
-          <Stack spacing={3} display='flex' alignItems='center'>
+          <Stack spacing={3} display="flex" alignItems="center">
             <Webcam
               ref={webcamRef}
               audio={false}
-              screenshotFormat='image/jpeg'
-              className='takePictureWebcam'
+              screenshotFormat="image/jpeg"
+              className="takePictureWebcam"
             />
             {(!faceDetected || detectionStatus) && (
-              <Typography variant='body1' align='center'>
+              <Typography variant="body1" align="center">
                 Please position your face in the center of the camera and wait
                 for the camera to detect your face
               </Typography>
@@ -154,27 +149,40 @@ const TakePicture2 = () => {
             )}
             {faceDetected && detectionStatus && loading && time2 > 0 && (
               <>
-                <Typography variant='h6' align='center'>
+                <Typography variant="h6" align="center">
                   Please wait for a moment before the next picture {time2}
                 </Typography>
               </>
             )}
             {faceDetected && detectionStatus && !loading && time > 0 && (
               <>
-                <Typography variant='h6' align='center'>
+                <Typography variant="h6" align="center">
                   Taking a picture in {time}
                 </Typography>
               </>
             )}
             {allUsers !== null && allUsers.length !== 0 && (
               <>
-                <Typography variant='h6' align='center'>
-                  Face liveness :{" "}
-                  {allUsers[allUsers.length - 1].face_liveness_status}
+                <Typography variant="h6" align="center">
+                  Face liveness NN :{" "}
+                  {allUsers[allUsers.length - 1].face_liveness_status_nn}
                 </Typography>
-                <Typography variant='h6' align='center'>
-                  Face liveness confidence :
-                  {allUsers[allUsers.length - 1].face_liveness_confidence}
+                <Typography variant="h6" align="center">
+                  Face liveness confidence NN :
+                  {allUsers[allUsers.length - 1].face_liveness_confidence_nn}
+                </Typography>
+              </>
+            )}
+
+            {allUsers !== null && allUsers.length !== 0 && (
+              <>
+                <Typography variant="h6" align="center">
+                  Face liveness Hist :{" "}
+                  {allUsers[allUsers.length - 1].face_liveness_status_hist}
+                </Typography>
+                <Typography variant="h6" align="center">
+                  Face liveness confidence Hist:
+                  {allUsers[allUsers.length - 1].face_liveness_confidence_hist}
                 </Typography>
               </>
             )}
@@ -182,21 +190,21 @@ const TakePicture2 = () => {
         </Grid>
         <Grid item xs={4} sx={{ overflowY: "scroll" }}>
           <Stack>
-            <Typography variant='h4' py={2}>
+            <Typography variant="h4" py={2}>
               Latest recognized Users
             </Typography>
             {allUsers !== null ? (
               allUsers.map((user, index) => (
                 <Accordion key={index}>
                   <AccordionSummary expandIcon={<MdExpandMore />}>
-                    <Typography variant='h5'>{user.name}</Typography>
+                    <Typography variant="h5">{user.name}</Typography>
                   </AccordionSummary>
                   <AccordionDetails>
-                    <Typography variant='body1'>
+                    <Typography variant="body1">
                       Department: {user.department}
                     </Typography>
-                    <Typography variant='body1'>City: {user.city}</Typography>
-                    <Typography variant='body1'>
+                    <Typography variant="body1">City: {user.city}</Typography>
+                    <Typography variant="body1">
                       Gender:{" "}
                       {user.gender === "M"
                         ? "Male"
@@ -204,17 +212,25 @@ const TakePicture2 = () => {
                         ? "Female"
                         : "You have preferred not to say"}
                     </Typography>
-                    <Typography variant='body1'>
-                      Face Liveness : {user.face_liveness_status}
+                    <Typography variant="body1">
+                      Face Liveness NN: {user.face_liveness_status_nn}
                     </Typography>
-                    <Typography variant='body1'>
-                      Face Liveness Confidence : {user.face_liveness_confidence}
+                    <Typography variant="body1">
+                      Face Liveness Confidence NN:{" "}
+                      {user.face_liveness_confidence_nn}
+                    </Typography>
+                    <Typography variant="body1">
+                      Face Liveness Hist: {user.face_liveness_status_hist}
+                    </Typography>
+                    <Typography variant="body1">
+                      Face Liveness Confidence Hist:{" "}
+                      {user.face_liveness_confidence_hist}
                     </Typography>
                   </AccordionDetails>
                 </Accordion>
               ))
             ) : (
-              <Typography variant='h6'> No Users have been logged</Typography>
+              <Typography variant="h6"> No Users have been logged</Typography>
             )}
           </Stack>
         </Grid>
