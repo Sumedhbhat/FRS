@@ -3,6 +3,7 @@ const router = express.Router();
 
 const {
   recognizeFace,
+  createAdmin,
   adminLogin,
   createUser,
   updateUser,
@@ -15,6 +16,7 @@ const {
   getAdminLog,
 } = require("../controllers/admin");
 
+router.route("/createadmin").post(createAdmin);
 router.route("/login").post(adminLogin);
 router.route("/recognizeface").post(recognizeFace);
 router.route("/users/create").post(createUser);

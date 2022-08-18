@@ -23,30 +23,59 @@ const fe_file = path.join(
 const pyscripts = path.join(__dirname, "..", "pyscripts");
 const recface = path.join(pyscripts, "recface.py");
 
-const adminLogin = async (req, res) => {
-  const { username, password } = req.body;
 
-  if (!username) {
-    return res.status(206).json({ msg: "no username provided" });
+const createAdmin = async (req, res) => {
+  const {name, email, password} = req.body;
+
+  if(!name || !email || !password) {
+    console.log(name+"\n"+email+"\n"+password);
+    return res.status(206).json({ msg: "insufficient data provided" });
+  }
+
+  db.promise().query("SELECT * FROM admin WHERE email = ?", [email])
+  .then((result) => {
+    if(result[0].length > 0) {
+      res.status(206).json({msg: "Admin with given email address already exists. Please go to the login page to login."});
+    }
+    else {
+      db.promise().query("INSERT INTO admin (name, email, password) VALUE (?, ?, ?)", [name, email, password])
+      .then((result) => {
+        alog(name, "Admin created");
+        db.execute("INSERT INTO admin_log (change_by, change_on, change_type) VALUE (?, ?, ?)", [name, "SELF", "CREATE"]);
+        res.status(200).json({msg: "Admin created"});
+      })
+    }
+  })
+  .catch((err) => {
+    console.log(err);
+    res.status(500).json({ msg: err.sqlMessage });
+  });
+};
+
+const adminLogin = async (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email) {
+    return res.status(206).json({ msg: "no email provided" });
   }
   if (!password) {
     return res.status(206).json({ msg: "no password provided" });
   }
 
   db.promise()
-    .query("SELECT password FROM admin WHERE username = ?", [username])
+    .query("SELECT password, name FROM admin WHERE email = ?", [email])
     .then((result) => {
       if (!result[0][0]) {
-        alog("", `Admin Login attempted with incorrect username: ${username}`);
+        alog(" ", `Admin Login attempted with incorrect email: ${email}`);
         res.status(404).json({ msg: "user does not exist" });
       } else {
         if (password === result[0][0].password) {
-          alog(username, "Admin Login successful");
-          db.execute("INSERT INTO admin_log (change_by, change_on, change_type) VALUE (?, ?, ?)", [username, "SELF", "LOGIN"]);
-          res.status(200).json({ msg: "login successful" });
+          alog(result[0][0].name, "Admin Login successful");
+          db.execute("INSERT INTO admin_log (change_by, change_on, change_type) VALUE (?, ?, ?)", [result[0][0].name, "SELF", "LOGIN"]);
+          res.status(200).json({ msg: "login successful", admin_name: result[0][0].name });
         } else {
           alog(
-            username,
+            result[0][0].name,
             `Admin Login attempted with incorrect password: ${password}`
           );
           res.status(422).json({ msg: "login unsuccessful" });
@@ -76,7 +105,7 @@ const recognizeFace = async (req, res) => {
     extension += base64img.substring(11, base64img.indexOf(";"));
   }
   if (extension !== ".png" && extension !== ".jpeg") {
-    alog(username, `Unsupported filetype: ${extension} input by the admin`);
+    alog(admin, `Unsupported filetype: ${extension} input by the admin`);
     return res.status(415).json({ msg: "unsupported filetype" });
   }
 
@@ -433,6 +462,7 @@ const getAdminLog = async (req, res) => {
 }
 
 module.exports = {
+  createAdmin,
   adminLogin,
   recognizeFace,
   createUser,

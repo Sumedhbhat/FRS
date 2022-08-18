@@ -5,9 +5,10 @@ USE `FRS`;
 
 /* Creating admin table */
 CREATE TABLE `FRS`.`admin` (
-  `username` VARCHAR(20) NOT NULL,
+  `name` VARCHAR(20) NOT NULL,
+  `email` VARCHAR(200) NOT NULL,
   `password` VARCHAR(20) NOT NULL,
-  PRIMARY KEY (`username`));
+  PRIMARY KEY (`email`));
   
 /* Creating admin logs table */
 CREATE TABLE `FRS`.`admin_log` (
@@ -154,13 +155,13 @@ DELIMITER $$
 CREATE PROCEDURE `get_admin_log` (IN admin_name VARCHAR(20))
 BEGIN
 	SELECT `change_on`, `change_type`, `change_time`
-  FROM `admin_log`
-  WHERE `change_by` = admin_name
-  ORDER BY `change_time` DESC
-  LIMIT 20;
+	FROM `admin_log`
+	WHERE `change_by` = admin_name
+	ORDER BY `change_time` DESC
+	LIMIT 20;
 END$$
 DELIMITER ;
 
 /* Inserting dummy admin values */
-INSERT INTO `FRS`.`admin` (`username`, `password`) VALUES ('vedansh', 'password');
-INSERT INTO `FRS`.`admin` (`username`, `password`) VALUES ('sumedh', 'sudu_1000');
+INSERT INTO `FRS`.`admin` (`name`, `email`, `password`) VALUES ('vedansh', 'vedansh@gmail.com', 'password');
+INSERT INTO `FRS`.`admin` (`name`, `email`, `password`) VALUES ('sumedh', 'sumedh@gmail.com', 'sudu_1000');
