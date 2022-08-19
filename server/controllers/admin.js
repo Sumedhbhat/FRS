@@ -48,7 +48,7 @@ const createAdmin = async (req, res) => {
   var expiry_time = new Date().getTime();
 
   db.promise().query("SELECT * FROM admin WHERE email = ?", [email])
-  .then((result) => {
+  .then(async (result) => {
     if(result[0].length > 0) {
       res.status(206).json({msg: "Admin with given email address already exists. Please go to the login page to login."});
     }
