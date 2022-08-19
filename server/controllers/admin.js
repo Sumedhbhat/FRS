@@ -109,6 +109,26 @@ const checkOTP = async (req, res) => {
     });
 };
 
+const resetPassword = async (req, res) => {
+  const {email, otp, newPass} = req.body;
+  db.promise().query("SELECT expiry_time, otp FROM otp_table WHERE email = ? ORDER BY expiry_time DESC LIMIT 1", [email, otp])
+    .then((result) => {
+        if(result[0].length == 0)
+          return res.status(400).json({msg: "user does not exist"});
+        else if(otp != result[0][0].otp)
+          return res.status(400).json({msg: "incorrect otp"});
+        var time_created = result[0][0].expiry_time;
+        var time_elapsed = (new Date().getTime() - time_created)/60000;
+        if(time_elapsed > 15)
+            return res.status(206).json({msg: "generate new otp"});
+        else {
+            var hash = bcrypt.hashSync(newPass, 10);
+            db.execute("UPDATE admin SET password = ? WHERE email = ?",[hash, email]);
+            return res.status(200).json({msg: "password reset successfully"});
+        }
+    });
+};
+
 const adminLogin = async (req, res) => {
   const { email, password } = req.body;
 
@@ -525,6 +545,7 @@ module.exports = {
   createAdmin,
   checkOTP,
   generateOTP,
+  resetPassword,
   adminLogin,
   recognizeFace,
   createUser,

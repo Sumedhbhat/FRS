@@ -6,6 +6,7 @@ const {
   createAdmin,
   checkOTP,
   generateOTP,
+  resetPassword,
   adminLogin,
   createUser,
   updateUser,
@@ -21,6 +22,7 @@ const {
 router.route("/createadmin").post(createAdmin);
 router.route("/checkotp").post(checkOTP);
 router.route("/generateotp").post(generateOTP);
+router.route("/resetpassword").post(resetPassword);
 router.route("/login").post(adminLogin);
 router.route("/recognizeface").post(recognizeFace);
 router.route("/users/create").post(createUser);
