@@ -47,19 +47,18 @@ const createAdmin = async (req, res) => {
   var otp = Math.round(Math.random()*10000);
   var expiry_time = new Date().getTime();
 
-  let info = await transporter.sendMail({
-    from: "FRS",
-    to: email,
-    subject: "Your Registration OTP",
-    text: `${otp}`,
-  });
-
   db.promise().query("SELECT * FROM admin WHERE email = ?", [email])
   .then((result) => {
     if(result[0].length > 0) {
       res.status(206).json({msg: "Admin with given email address already exists. Please go to the login page to login."});
     }
     else {
+      let info = await transporter.sendMail({
+        from: "FRS",
+        to: email,
+        subject: "Your Registration OTP",
+        text: `${otp}`,
+      });
       db.promise().query("INSERT INTO admin (name, email, password) VALUE (?, ?, ?)", [name, email, hash])
       .then((result) => {
         db.execute("INSERT INTO otp_table VALUE (?,?,?)", [email, otp, expiry_time]);
