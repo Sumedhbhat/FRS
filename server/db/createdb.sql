@@ -7,8 +7,15 @@ USE `FRS`;
 CREATE TABLE `FRS`.`admin` (
   `name` VARCHAR(20) NOT NULL,
   `email` VARCHAR(200) NOT NULL,
-  `password` VARCHAR(20) NOT NULL,
+  `password` VARCHAR(100) NOT NULL,
+  `status` VARCHAR(8) DEFAULT 'disabled',
   PRIMARY KEY (`email`));
+
+/* Creating OTP table */
+CREATE TABLE `FRS`.`otp_table` (
+  `email` VARCHAR(200) NOT NULL,
+  `otp` VARCHAR(4) NOT NULL,
+  `expiry_time` BIGINT(100) NOT NULL);
   
 /* Creating admin logs table */
 CREATE TABLE `FRS`.`admin_log` (
@@ -161,7 +168,3 @@ BEGIN
 	LIMIT 20;
 END$$
 DELIMITER ;
-
-/* Inserting dummy admin values */
-INSERT INTO `FRS`.`admin` (`name`, `email`, `password`) VALUES ('vedansh', 'vedansh@gmail.com', 'password');
-INSERT INTO `FRS`.`admin` (`name`, `email`, `password`) VALUES ('sumedh', 'sumedh@gmail.com', 'sudu_1000');

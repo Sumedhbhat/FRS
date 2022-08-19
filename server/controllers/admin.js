@@ -2,6 +2,8 @@ const fs = require("fs");
 const { v4: uuidv4 } = require("uuid");
 const path = require("path");
 const { spawnSync } = require("child_process");
+const nodemailer = require("nodemailer");
+const bcrypt = require("bcrypt");
 
 const db = require("../db/dbconnect");
 const filterFiller = require("../utils/filter");
@@ -23,6 +25,15 @@ const fe_file = path.join(
 const pyscripts = path.join(__dirname, "..", "pyscripts");
 const recface = path.join(pyscripts, "recface.py");
 
+const transporter = nodemailer.createTransport({
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false, // true for 465, false for other ports
+  auth: {
+    user: "your-email@gmail.com", // Admin Gmail ID
+    pass: "your-app-password", // Admin Gmail Password
+  },
+});
 
 const createAdmin = async (req, res) => {
   const {name, email, password} = req.body;
@@ -32,17 +43,29 @@ const createAdmin = async (req, res) => {
     return res.status(206).json({ msg: "insufficient data provided" });
   }
 
+  var hash = bcrypt.hashSync(password, 10);
+  var otp = Math.round(Math.random()*10000);
+  var expiry_time = new Date().getTime();
+
+  let info = await transporter.sendMail({
+    from: "FRS",
+    to: email,
+    subject: "Your Registration OTP",
+    text: `${otp}`,
+  });
+
   db.promise().query("SELECT * FROM admin WHERE email = ?", [email])
   .then((result) => {
     if(result[0].length > 0) {
       res.status(206).json({msg: "Admin with given email address already exists. Please go to the login page to login."});
     }
     else {
-      db.promise().query("INSERT INTO admin (name, email, password) VALUE (?, ?, ?)", [name, email, password])
+      db.promise().query("INSERT INTO admin (name, email, password) VALUE (?, ?, ?)", [name, email, hash])
       .then((result) => {
+        db.execute("INSERT INTO otp_table VALUE (?,?,?)", [email, otp, expiry_time]);
         alog(name, "Admin created");
         db.execute("INSERT INTO admin_log (change_by, change_on, change_type) VALUE (?, ?, ?)", [name, "SELF", "CREATE"]);
-        res.status(200).json({msg: "Admin created"});
+        res.status(200).json({msg: "Admin created, enter OTP to enable account."});
       })
     }
   })
@@ -50,6 +73,41 @@ const createAdmin = async (req, res) => {
     console.log(err);
     res.status(500).json({ msg: err.sqlMessage });
   });
+};
+
+const generateOTP = async (req, res) => {
+  const {email} = req.body;
+  var otp = Math.round(Math.random()*10000);
+  var expiry_time = new Date().getTime();
+
+  let info = await transporter.sendMail({
+    from: "FRS",
+    to: email,
+    subject: "Your Registration OTP",
+    text: `${otp}`,
+  });
+
+  db.execute("INSERT INTO otp_table VALUE (?,?,?)", [email, otp, expiry_time]);
+  res.status(200).json({msg: "OTP sent to your email."});  
+};
+
+const checkOTP = async (req, res) => {
+  const {email, otp} = req.body;
+  db.promise().query("SELECT expiry_time, otp FROM otp_table WHERE email = ? ORDER BY expiry_time DESC LIMIT 1", [email, otp])
+    .then((result) => {
+        if(result[0].length == 0)
+          return res.status(400).json({msg: "user does not exist"});
+        else if(otp != result[0][0].otp)
+          return res.status(400).json({msg: "incorrect otp"});
+        var time_created = result[0][0].expiry_time;
+        var time_elapsed = (new Date().getTime() - time_created)/60000;
+        if(time_elapsed > 15)
+            return res.status(206).json({msg: "generate new otp"});
+        else {
+            db.execute("UPDATE admin SET status = 'enabled' WHERE email = ?",[email]);
+            return res.status(200).json({msg: "registration successful"});
+        }
+    });
 };
 
 const adminLogin = async (req, res) => {
@@ -63,13 +121,16 @@ const adminLogin = async (req, res) => {
   }
 
   db.promise()
-    .query("SELECT password, name FROM admin WHERE email = ?", [email])
+    .query("SELECT password, name, status FROM admin WHERE email = ?", [email])
     .then((result) => {
       if (!result[0][0]) {
         alog(" ", `Admin Login attempted with incorrect email: ${email}`);
         res.status(404).json({ msg: "user does not exist" });
+      } else if(result[0][0].status === 'disabled') {
+        alog(result[0][0].name, "Admin Login attempted with disabled account");
+        res.status(206).json({ msg: "account not activated yet. goto OTP page to activate account first" });
       } else {
-        if (password === result[0][0].password) {
+        if (bcrypt.compareSync(password, result[0][0].password)) {
           alog(result[0][0].name, "Admin Login successful");
           db.execute("INSERT INTO admin_log (change_by, change_on, change_type) VALUE (?, ?, ?)", [result[0][0].name, "SELF", "LOGIN"]);
           res.status(200).json({ msg: "login successful", admin_name: result[0][0].name });
@@ -463,6 +524,8 @@ const getAdminLog = async (req, res) => {
 
 module.exports = {
   createAdmin,
+  checkOTP,
+  generateOTP,
   adminLogin,
   recognizeFace,
   createUser,

@@ -4,6 +4,8 @@ const router = express.Router();
 const {
   recognizeFace,
   createAdmin,
+  checkOTP,
+  generateOTP,
   adminLogin,
   createUser,
   updateUser,
@@ -17,6 +19,8 @@ const {
 } = require("../controllers/admin");
 
 router.route("/createadmin").post(createAdmin);
+router.route("/checkotp").post(checkOTP);
+router.route("/generateotp").post(generateOTP);
 router.route("/login").post(adminLogin);
 router.route("/recognizeface").post(recognizeFace);
 router.route("/users/create").post(createUser);
