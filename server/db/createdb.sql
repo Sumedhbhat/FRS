@@ -10,12 +10,6 @@ CREATE TABLE `FRS`.`admin` (
   `password` VARCHAR(100) NOT NULL,
   `status` VARCHAR(8) DEFAULT 'disabled',
   PRIMARY KEY (`email`));
-
-/* Creating OTP table */
-CREATE TABLE `FRS`.`otp_table` (
-  `email` VARCHAR(200) NOT NULL,
-  `otp` VARCHAR(4) NOT NULL,
-  `expiry_time` BIGINT(100) NOT NULL);
   
 /* Creating admin logs table */
 CREATE TABLE `FRS`.`admin_log` (

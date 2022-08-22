@@ -4,6 +4,9 @@ const path = require("path");
 const { spawnSync } = require("child_process");
 const nodemailer = require("nodemailer");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const dotenv = require("dotenv");
+dotenv.config();
 
 const db = require("../db/dbconnect");
 const filterFiller = require("../utils/filter");
@@ -30,8 +33,8 @@ const transporter = nodemailer.createTransport({
   port: 587,
   secure: false, // true for 465, false for other ports
   auth: {
-    user: "your-email@gmail.com", // Admin Gmail ID
-    pass: "your-app-password", // Admin Gmail Password
+    user: "mail.for.vedansh@gmail.com", // Admin Gmail ID
+    pass: "czgdtsbnwsgcigbq", // Admin Gmail Password
   },
 });
 
@@ -44,8 +47,6 @@ const createAdmin = async (req, res) => {
   }
 
   var hash = bcrypt.hashSync(password, 10);
-  var otp = Math.round(Math.random()*10000);
-  var expiry_time = new Date().getTime();
 
   db.promise().query("SELECT * FROM admin WHERE email = ?", [email])
   .then(async (result) => {
@@ -53,18 +54,21 @@ const createAdmin = async (req, res) => {
       res.status(206).json({msg: "Admin with given email address already exists. Please go to the login page to login."});
     }
     else {
+      const secret = process.env.JWT_SECRET_KEY;
+      const token = jwt.sign({email: email}, secret, {expiresIn: process.env.REGISTRATION_EXPIRY});
+      const link = `http://localhost:${process.env.PORT}/api/admin/activateadmin/${token}`;
+      console.log(link);
       let info = await transporter.sendMail({
         from: "FRS",
         to: email,
-        subject: "Your Registration OTP",
-        text: `${otp}`,
+        subject: "Your Activation Link",
+        text: link,
       });
       db.promise().query("INSERT INTO admin (name, email, password) VALUE (?, ?, ?)", [name, email, hash])
-      .then((result) => {
-        db.execute("INSERT INTO otp_table VALUE (?,?,?)", [email, otp, expiry_time]);
+      .then(() => {
         alog(name, "Admin created");
         db.execute("INSERT INTO admin_log (change_by, change_on, change_type) VALUE (?, ?, ?)", [name, "SELF", "CREATE"]);
-        res.status(200).json({msg: "Admin created, enter OTP to enable account."});
+        res.status(200).json({msg: "Admin created, click the activation link sent via email to activate."});
       })
     }
   })
@@ -74,59 +78,105 @@ const createAdmin = async (req, res) => {
   });
 };
 
-const generateOTP = async (req, res) => {
+const generateActivationLink = async (req, res) => {
   const {email} = req.body;
-  var otp = Math.round(Math.random()*10000);
-  var expiry_time = new Date().getTime();
+  const secret = process.env.JWT_SECRET_KEY;
+  const token = jwt.sign({email: email}, secret, {expiresIn: process.env.REGISTRATION_EXPIRY});
+  const link = `http://localhost:${process.env.PORT}/api/admin/activateadmin/${token}`;
+  console.log(link);
 
   let info = await transporter.sendMail({
     from: "FRS",
     to: email,
-    subject: "Your Registration OTP",
-    text: `${otp}`,
+    subject: "Your Activation Link",
+    text: link,
   });
 
-  db.execute("INSERT INTO otp_table VALUE (?,?,?)", [email, otp, expiry_time]);
-  res.status(200).json({msg: "OTP sent to your email."});  
+  res.status(200).json({msg: "Activation link sent to your email."});  
 };
 
-const checkOTP = async (req, res) => {
-  const {email, otp} = req.body;
-  db.promise().query("SELECT expiry_time, otp FROM otp_table WHERE email = ? ORDER BY expiry_time DESC LIMIT 1", [email, otp])
-    .then((result) => {
-        if(result[0].length == 0)
-          return res.status(400).json({msg: "user does not exist"});
-        else if(otp != result[0][0].otp)
-          return res.status(400).json({msg: "incorrect otp"});
-        var time_created = result[0][0].expiry_time;
-        var time_elapsed = (new Date().getTime() - time_created)/60000;
-        if(time_elapsed > 15)
-            return res.status(206).json({msg: "generate new otp"});
-        else {
-            db.execute("UPDATE admin SET status = 'enabled' WHERE email = ?",[email]);
-            return res.status(200).json({msg: "registration successful"});
-        }
+const activateAdmin = async (req, res) => {
+  const {token} = req.params;
+  var email, expiry;
+
+  try {
+    var jwt_decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+    email = jwt_decoded.email;
+    expiry = jwt_decoded.exp;
+  }
+  catch(err) {
+    console.log(err);
+    return res.status(500).json({msg: "Invalid token"});
+  }
+
+  if(expiry > new Date().getTime())
+    return res.status(410).json({msg: "Registration link expired. Please generate a new link."});
+
+  db.query("SELECT status FROM admin WHERE email = ?", [email],
+  async (err, result) => {
+    if(err) {
+      console.log(err);
+      return res.status(500).json({msg: err.sqlMessage});
+    }
+    if(!result[0])
+      return res.status(404).json({msg: "Admin not found"});
+    if(result[0].status === 'ENABLED')
+      return res.status(409).json({msg: "Admin already verified"});
+    db.execute("UPDATE admin SET status = 'ENABLED' WHERE email = ?", [email],
+    (err) => {
+      if(err) {
+        console.log(err);
+        return res.status(500).json({msg: err.sqlMessage});
+      }
+      return res.status(200).json({msg: "Admin activated successfully"});
     });
+  });
+};
+
+const generateResetLink = async (req, res) => {
+  const {email} = req.body;
+  const secret = process.env.JWT_SECRET_KEY;
+  const token = jwt.sign({email: email}, secret, {expiresIn: process.env.PASSWORD_RESET_EXPIRY});
+  const link = `http://localhost:${process.env.PORT}/api/admin/resetpassword/${token}`;
+  console.log(link);
+
+  let info = await transporter.sendMail({
+    from: "FRS",
+    to: email,
+    subject: "Your Password Reset Link",
+    text: link,
+  });
+
+  res.status(200).json({msg: "Password reset link sent to your email."});  
 };
 
 const resetPassword = async (req, res) => {
-  const {email, otp, newPass} = req.body;
-  db.promise().query("SELECT expiry_time, otp FROM otp_table WHERE email = ? ORDER BY expiry_time DESC LIMIT 1", [email, otp])
-    .then((result) => {
-        if(result[0].length == 0)
-          return res.status(400).json({msg: "user does not exist"});
-        else if(otp != result[0][0].otp)
-          return res.status(400).json({msg: "incorrect otp"});
-        var time_created = result[0][0].expiry_time;
-        var time_elapsed = (new Date().getTime() - time_created)/60000;
-        if(time_elapsed > 15)
-            return res.status(206).json({msg: "generate new otp"});
-        else {
-            var hash = bcrypt.hashSync(newPass, 10);
-            db.execute("UPDATE admin SET password = ? WHERE email = ?",[hash, email]);
-            return res.status(200).json({msg: "password reset successfully"});
-        }
-    });
+  const {token} = req.params;
+  const {newPass} = req.body;
+  var email, expiry;
+
+  try {
+    var jwt_decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+    email = jwt_decoded.email;
+    expiry = jwt_decoded.exp;
+  }
+  catch(err) {
+    console.log(err);
+    return res.status(400).json({msg: "Invalid token"});
+  }
+
+  if(expiry > new Date().getTime())
+    return res.status(410).json({msg: "Password Reset link expired. Please generate a new link."});
+
+  try {
+    var hash = bcrypt.hashSync(newPass, 10);
+    db.execute("UPDATE admin SET password = ? WHERE email = ?",[hash, email]);
+    return res.status(200).json({msg: "password reset successfully"});
+  }
+  catch(err) {
+    console.log(err);
+    return res.status(500).json({msg: err.sqlMessage});
+  }
 };
 
 const adminLogin = async (req, res) => {
@@ -543,8 +593,9 @@ const getAdminLog = async (req, res) => {
 
 module.exports = {
   createAdmin,
-  checkOTP,
-  generateOTP,
+  generateActivationLink,
+  activateAdmin,
+  generateResetLink,
   resetPassword,
   adminLogin,
   recognizeFace,
