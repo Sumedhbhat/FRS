@@ -33,8 +33,8 @@ const transporter = nodemailer.createTransport({
   port: 587,
   secure: false, // true for 465, false for other ports
   auth: {
-    user: "mail.for.vedansh@gmail.com", // Admin Gmail ID
-    pass: "czgdtsbnwsgcigbq", // Admin Gmail Password
+    user: "your-gmail@gmail.com", // Admin Gmail ID
+    pass: "your-app-password", // Admin Gmail Password
   },
 });
 
@@ -58,18 +58,25 @@ const createAdmin = async (req, res) => {
       const token = jwt.sign({email: email}, secret, {expiresIn: process.env.REGISTRATION_EXPIRY});
       const link = `http://localhost:${process.env.PORT}/api/admin/activateadmin/${token}`;
       console.log(link);
-      let info = await transporter.sendMail({
-        from: "FRS",
-        to: email,
-        subject: "Your Activation Link",
-        text: link,
-      });
+      try {
+        let info = await transporter.sendMail({
+          from: "FRS",
+          to: email,
+          subject: "Your Activation Link",
+          text: link,
+        });
+      }
+      catch(err) {
+        console.log(err);
+        return res.status(500).json({msg: "Error sending email"});
+      }
       db.promise().query("INSERT INTO admin (name, email, password) VALUE (?, ?, ?)", [name, email, hash])
       .then(() => {
         alog(name, "Admin created");
         db.execute("INSERT INTO admin_log (change_by, change_on, change_type) VALUE (?, ?, ?)", [name, "SELF", "CREATE"]);
         res.status(200).json({msg: "Admin created, click the activation link sent via email to activate."});
       })
+      console.log("here");
     }
   })
   .catch((err) => {
@@ -80,19 +87,31 @@ const createAdmin = async (req, res) => {
 
 const generateActivationLink = async (req, res) => {
   const {email} = req.body;
-  const secret = process.env.JWT_SECRET_KEY;
-  const token = jwt.sign({email: email}, secret, {expiresIn: process.env.REGISTRATION_EXPIRY});
-  const link = `http://localhost:${process.env.PORT}/api/admin/activateadmin/${token}`;
-  console.log(link);
 
-  let info = await transporter.sendMail({
-    from: "FRS",
-    to: email,
-    subject: "Your Activation Link",
-    text: link,
+  db.promise().query("SELECT * FROM admin WHERE email = ?", [email])
+  .then(async (result) => {
+    if(result[0].length === 0)
+      return res.status(404).json({msg: "Admin not found"});
+      const secret = process.env.JWT_SECRET_KEY;
+      const token = jwt.sign({email: email}, secret, {expiresIn: process.env.REGISTRATION_EXPIRY});
+      const link = `http://localhost:${process.env.PORT}/api/admin/activateadmin/${token}`;
+      console.log(link);
+    
+      try {
+        let info = await transporter.sendMail({
+          from: "FRS",
+          to: email,
+          subject: "Your Activation Link",
+          text: link,
+        });
+      }
+      catch(err) {
+        console.log(err);
+        return res.status(500).json({msg: "Error sending email"});
+      }
+    
+      return res.status(200).json({msg: "Activation link sent to your email."});
   });
-
-  res.status(200).json({msg: "Activation link sent to your email."});  
 };
 
 const activateAdmin = async (req, res) => {
@@ -135,19 +154,29 @@ const activateAdmin = async (req, res) => {
 
 const generateResetLink = async (req, res) => {
   const {email} = req.body;
-  const secret = process.env.JWT_SECRET_KEY;
-  const token = jwt.sign({email: email}, secret, {expiresIn: process.env.PASSWORD_RESET_EXPIRY});
-  const link = `http://localhost:${process.env.PORT}/api/admin/resetpassword/${token}`;
-  console.log(link);
 
-  let info = await transporter.sendMail({
-    from: "FRS",
-    to: email,
-    subject: "Your Password Reset Link",
-    text: link,
+  db.promise().query("SELECT * FROM admin WHERE email = ?", [email])
+  .then(async (result) => {
+    if(result[0].length === 0)
+      return res.status(404).json({msg: "Admin not found"});
+    const secret = process.env.JWT_SECRET_KEY;
+    const token = jwt.sign({email: email}, secret, {expiresIn: process.env.PASSWORD_RESET_EXPIRY});
+    const link = `http://localhost:${process.env.PORT}/api/admin/resetpassword/${token}`;
+    console.log(link);
+    try {
+      let info = transporter.sendMail({
+        from: "FRS",
+        to: email,
+        subject: "Your Reset Link",
+        text: link,
+      });
+    }
+    catch(err) {
+      console.log(err);
+      return res.status(500).json({msg: "Error sending email"});
+    }
+    return res.status(200).json({msg: "Password reset link sent to your email."});
   });
-
-  res.status(200).json({msg: "Password reset link sent to your email."});  
 };
 
 const resetPassword = async (req, res) => {
@@ -202,7 +231,9 @@ const adminLogin = async (req, res) => {
         if (bcrypt.compareSync(password, result[0][0].password)) {
           alog(result[0][0].name, "Admin Login successful");
           db.execute("INSERT INTO admin_log (change_by, change_on, change_type) VALUE (?, ?, ?)", [result[0][0].name, "SELF", "LOGIN"]);
-          res.status(200).json({ msg: "login successful", admin_name: result[0][0].name });
+          const secret = process.env.JWT_SECRET_KEY;
+          const token = jwt.sign({name: result[0][0].name}, secret);
+          res.status(200).json({ msg: "login successful", token: token });
         } else {
           alog(
             result[0][0].name,
@@ -219,9 +250,9 @@ const adminLogin = async (req, res) => {
 };
 
 const recognizeFace = async (req, res) => {
-  var { base64img, user_id, admin } = req.body;
+  var { base64img, user_id, last_modified_by } = req.body;
 
-  if (!admin) {
+  if (!last_modified_by) {
     return res.status(206).json({ msg: "insufficient data provided" });
   }
 
@@ -235,7 +266,7 @@ const recognizeFace = async (req, res) => {
     extension += base64img.substring(11, base64img.indexOf(";"));
   }
   if (extension !== ".png" && extension !== ".jpeg") {
-    alog(admin, `Unsupported filetype: ${extension} input by the admin`);
+    alog(last_modified_by, `Unsupported filetype: ${extension} input by the admin`);
     return res.status(415).json({ msg: "unsupported filetype" });
   }
 
@@ -260,18 +291,19 @@ const recognizeFace = async (req, res) => {
   }
   catch(e) {
     console.log(e);
+    console.log(String(process.stdout));
     return res.status(400).json({msg:"something went wrong with python script"});
   }
 
   const {errmsg, msg, usr_id, face_encoding} = pyres;
 
   if(errmsg) {
-    alog(admin, `Image with ${errmsg} input by the admin`);
+    alog(last_modified_by, `Image with ${errmsg} input by the admin`);
     fs.unlinkSync(imgpath);
     return res.status(216).json({msg: errmsg});
   }
   else {
-    alog(admin, `Image with ${msg.substring(0, msg.indexOf(" "))} user_id: ${usr_id} input by the admin`);
+    alog(last_modified_by, `Image with ${msg.substring(0, msg.indexOf(" "))} user_id: ${usr_id} input by the admin`);
     var sts = msg === "existing user" ? 200 : 211;
     return res.status(sts).json({msg: msg, user_id: usr_id, extension: extension, face_encoding: face_encoding})
   }
@@ -345,7 +377,7 @@ const createUser = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-  const user_id = req.query.user_id;
+  const user_id = req.params.user_id;
   if (!user_id) {
     return res.status(200).json({ msg: "no user_id provided" });
   }
@@ -441,7 +473,7 @@ const updateUser = async (req, res) => {
 };
 
 const deleteUser = async (req, res) => {
-  const user_id = req.query.user_id;
+  const user_id = req.params.user_id;
   if (!user_id) {
     return res.status(206).json({ msg: "no user_id provided" });
   }
@@ -477,7 +509,7 @@ const deleteUser = async (req, res) => {
 };
 
 const getUser = async (req, res) => {
-  const user_id = req.query.user_id;
+  const user_id = req.params.user_id;
   if (!user_id) {
     return res.status(206).json({ msg: "no user_id provided" });
   }
@@ -579,7 +611,8 @@ const getUserCaptureLog = async (req, res) => {
 }
 
 const getAdminLog = async (req, res) => {
-  const {admin_name} = req.body;
+  const {last_modified_by} = req.body;
+  const admin_name = last_modified_by;
   if (!admin_name) return res.status(206).json({ msg: "no admin_name provided" });
   db.promise().query(`CALL get_admin_log(?)`, [admin_name])
     .then((result) => {
