@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getUsers } from "./Redux/functions/userFunctions";
 import TakePicture2 from "./Components/TakePicture2/TakePicture2";
 import MultipleImages from "./Components/MulitpleImages/MultipleImages";
+import Landing from "./Components/Landing/Landing";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -22,6 +23,7 @@ const App = () => {
     <Router basename={basename}>
       <Routes>
         <Route path='/' element={<Home />} />
+        <Route path='/landing' element={<Landing />} />
         <Route path='/take-picture' element={<TakePicture />} />
         <Route path='/login' element={<LoginPage />} />
         <Route path='/admin' element={<AdminPage />} />
