@@ -3,6 +3,8 @@ const fileupload = require("express-fileupload");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const path = require("path");
+const dotenv = require("dotenv");
+dotenv.config();
 const app = express();
 const port = process.env.PORT || 5000;
 
