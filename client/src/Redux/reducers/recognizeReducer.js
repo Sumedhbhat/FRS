@@ -46,10 +46,16 @@ export const recognizeUser2 = createAsyncThunk(
   "recognize/recognizeUser2",
   async (image, { rejectWithValue, getState }) => {
     const data = await axios
-      .post(process.env.REACT_APP_SERVER + "/user/recognizeuser", {
-        base64img: image,
-        in_out_status: "IN",
-      })
+      .post(
+        process.env.REACT_APP_SERVER + "/user/recognizeuser",
+        {
+          headers: { Authorization: sessionStorage.getItem("token") },
+        },
+        {
+          base64img: image,
+          in_out_status: "IN",
+        }
+      )
       .then((res) => {
         console.log(res);
         console.log(res.data.face_liveness_confidence);
@@ -87,10 +93,16 @@ export const recognizeUser = createAsyncThunk(
   "recognize/recognizeUserStatus",
   async (image, { rejectWithValue, getState }) => {
     const data = await axios
-      .post(process.env.REACT_APP_SERVER + "/user/recognizeuser", {
-        base64img: getState().recognize.image,
-        in_out_status: "IN",
-      })
+      .post(
+        process.env.REACT_APP_SERVER + "/user/recognizeuser",
+        {
+          headers: { Authorization: sessionStorage.getItem("token") },
+        },
+        {
+          base64img: getState().recognize.image,
+          in_out_status: "IN",
+        }
+      )
       .then((res) => {
         console.log(res);
         if (res.status === 200) {

@@ -5,13 +5,19 @@ export const addUser = createAsyncThunk(
   "user/addUserStatus",
   async (user, { getState, rejectWithValue }) => {
     const data = await axios
-      .post(process.env.REACT_APP_SERVER+"/admin/users/create", {
-        ...user,
-        user_id: getState().image.user_id,
-        last_modified_by: getState().admin.username,
-        extension: getState().image.extension,
-        face_encoding: getState().image.face_encoding,
-      })
+      .post(
+        process.env.REACT_APP_SERVER + "/admin/users/create",
+        {
+          headers: { Authorization: sessionStorage.getItem("token") },
+        },
+        {
+          ...user,
+          user_id: getState().image.user_id,
+          last_modified_by: getState().admin.username,
+          extension: getState().image.extension,
+          face_encoding: getState().image.face_encoding,
+        }
+      )
       .then((res) => {
         console.log("inside add user function");
         console.log(res);
@@ -34,7 +40,9 @@ export const getUsers = createAsyncThunk(
   "user/getUsersStatus",
   async (obj, thunkAPI) => {
     const data = await axios
-      .get(process.env.REACT_APP_SERVER + "/admin/dashboard")
+      .get(process.env.REACT_APP_SERVER + "/admin/dashboard", {
+        headers: { Authorization: sessionStorage.getItem("token") },
+      })
       .then((res) => {
         console.log(res);
         if (res.status === 200) {
@@ -56,7 +64,13 @@ export const filterUsers = createAsyncThunk(
   async (filter, thunkAPI) => {
     console.log(filter);
     const data = await axios
-      .post(process.env.REACT_APP_SERVER + "/admin/users/search", filter)
+      .post(
+        process.env.REACT_APP_SERVER + "/admin/users/search",
+        {
+          headers: { Authorization: sessionStorage.getItem("token") },
+        },
+        filter
+      )
       .then((res) => {
         if (res.status === 200) {
           console.log(res.data);
@@ -75,12 +89,18 @@ export const deleteUser = createAsyncThunk(
   async (user_id, { rejectWithValue, getState }) => {
     console.log(user_id);
     const data = await axios
-      .delete(process.env.REACT_APP_SERVER + "/admin/users", {
-        params: {
-          user_id: user_id,
+      .delete(
+        process.env.REACT_APP_SERVER + "/admin/users",
+        {
+          headers: { Authorization: sessionStorage.getItem("token") },
         },
-        data: { last_modified_by: getState().admin.username },
-      })
+        {
+          params: {
+            user_id: user_id,
+          },
+          data: { last_modified_by: getState().admin.username },
+        }
+      )
       .then((res) => {
         if (res.status === 200) {
           console.log(res.data);
@@ -99,7 +119,9 @@ export const getUser = createAsyncThunk(
   "user/getUserStatus",
   async (user_id, thunkAPI) => {
     const data = await axios
-      .get(process.env.REACT_APP_SERVER + "/admin/users/?user_id=" + user_id)
+      .get(process.env.REACT_APP_SERVER + "/admin/users/?user_id=" + user_id, {
+        headers: { Authorization: sessionStorage.getItem("token") },
+      })
       .then((res) => {
         if (res.status === 200) {
           return res.data;
@@ -123,9 +145,12 @@ export const updateUser = createAsyncThunk(
       face_encoding: getState().image.face_encoding,
     };
 
-    const data = axios
+    const data = await axios
       .patch(
         process.env.REACT_APP_SERVER + "/admin/users/?user_id=" + user.user_id,
+        {
+          headers: { Authorization: sessionStorage.getItem("token") },
+        },
         user
       )
       .then((res) => {
@@ -148,7 +173,9 @@ export const getDisplayUser = createAsyncThunk(
   "user/getDisplayUserStatus",
   async (user_id, thunkAPI) => {
     const data = await axios
-      .get(process.env.REACT_APP_SERVER + "/admin/users/?user_id=" + user_id)
+      .get(process.env.REACT_APP_SERVER + "/admin/users/?user_id=" + user_id, {
+        headers: { Authorization: sessionStorage.getItem("token") },
+      })
       .then((res) => {
         if (res.status === 200) {
           return res.data;
@@ -168,9 +195,15 @@ export const checkFace = createAsyncThunk(
     const image = getState().user.image;
     console.log(image);
     const data = await axios
-      .post(process.env.REACT_APP_SERVER + "/admin/recognizeFace", {
-        base64img: image,
-      })
+      .post(
+        process.env.REACT_APP_SERVER + "/admin/recognizeFace",
+        {
+          headers: { Authorization: sessionStorage.getItem("token") },
+        },
+        {
+          base64img: image,
+        }
+      )
       .then((res) => {
         if (res.status === 200) {
           return { msg: "Success" };

@@ -30,10 +30,16 @@ const PicCapture = () => {
     //   base_img: imageBuffer,
     // });
     if (imageSrc !== null || imageSrc !== "" || imageSrc !== undefined) {
-      axios.post("http://localhost:3090/", {
-        img_string: imgSrc,
-        img_name: "sumedh",
-      });
+      axios.post(
+        "http://localhost:3090/",
+        {
+          headers: { Authorization: sessionStorage.getItem("token") },
+        },
+        {
+          img_string: imgSrc,
+          img_name: "sumedh",
+        }
+      );
     }
   }, [webcamRef, setImgSrc, imgSrc]);
 

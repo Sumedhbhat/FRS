@@ -33,70 +33,90 @@ const transporter = nodemailer.createTransport({
   port: 587,
   secure: false, // true for 465, false for other ports
   auth: {
-    user: "your-gmail@gmail.com", // Admin Gmail ID
-    pass: "your-app-password", // Admin Gmail Password
+    user: "sumedhbhat01@gmail.com", // Admin Gmail ID
+    pass: "komnucnnbhczklkt", // Admin Gmail Password
   },
 });
 
 const createAdmin = async (req, res) => {
-  const {name, email, password} = req.body;
+  const { name, email, password } = req.body;
 
-  if(!name || !email || !password) {
-    console.log(name+"\n"+email+"\n"+password);
+  if (!name || !email || !password) {
+    console.log(name + "\n" + email + "\n" + password);
     return res.status(206).json({ msg: "insufficient data provided" });
   }
 
   var hash = bcrypt.hashSync(password, 10);
 
-  db.promise().query("SELECT * FROM admin WHERE email = ?", [email])
-  .then(async (result) => {
-    if(result[0].length > 0) {
-      res.status(206).json({msg: "Admin with given email address already exists. Please go to the login page to login."});
-    }
-    else {
-      const secret = process.env.JWT_SECRET_KEY;
-      const token = jwt.sign({email: email}, secret, {expiresIn: process.env.REGISTRATION_EXPIRY});
-      const link = `http://localhost:${process.env.PORT}/api/admin/activateadmin/${token}`;
-      console.log(link);
-      try {
-        let info = await transporter.sendMail({
-          from: "FRS",
-          to: email,
-          subject: "Your Activation Link",
-          text: link,
+  db.promise()
+    .query("SELECT * FROM admin WHERE email = ?", [email])
+    .then(async (result) => {
+      if (result[0].length > 0) {
+        res
+          .status(206)
+          .json({
+            msg: "Admin with given email address already exists. Please go to the login page to login.",
+          });
+      } else {
+        const secret = process.env.JWT_SECRET_KEY;
+        const token = jwt.sign({ email: email }, secret, {
+          expiresIn: process.env.REGISTRATION_EXPIRY,
         });
+        const link = `http://localhost:${process.env.PORT}/api/admin/activateadmin/${token}`;
+        console.log(link);
+        try {
+          let info = await transporter.sendMail({
+            from: "FRS",
+            to: email,
+            subject: "Your Activation Link",
+            text: link,
+          });
+        } catch (err) {
+          console.log(err);
+          return res.status(500).json({ msg: "Error sending email" });
+        }
+        db.promise()
+          .query("INSERT INTO admin (name, email, password) VALUE (?, ?, ?)", [
+            name,
+            email,
+            hash,
+          ])
+          .then(() => {
+            alog(name, "Admin created");
+            db.execute(
+              "INSERT INTO admin_log (change_by, change_on, change_type) VALUE (?, ?, ?)",
+              [name, "SELF", "CREATE"]
+            );
+            res
+              .status(200)
+              .json({
+                msg: "Admin created, click the activation link sent via email to activate.",
+              });
+          });
+        console.log("here");
       }
-      catch(err) {
-        console.log(err);
-        return res.status(500).json({msg: "Error sending email"});
-      }
-      db.promise().query("INSERT INTO admin (name, email, password) VALUE (?, ?, ?)", [name, email, hash])
-      .then(() => {
-        alog(name, "Admin created");
-        db.execute("INSERT INTO admin_log (change_by, change_on, change_type) VALUE (?, ?, ?)", [name, "SELF", "CREATE"]);
-        res.status(200).json({msg: "Admin created, click the activation link sent via email to activate."});
-      })
-      console.log("here");
-    }
-  })
-  .catch((err) => {
-    console.log(err);
-    res.status(500).json({ msg: err.sqlMessage });
-  });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ msg: err.sqlMessage });
+    });
 };
 
 const generateActivationLink = async (req, res) => {
-  const {email} = req.body;
+  const { email } = req.body;
 
-  db.promise().query("SELECT * FROM admin WHERE email = ?", [email])
-  .then(async (result) => {
-    if(result[0].length === 0)
-      return res.status(404).json({msg: "Admin not found"});
+  db.promise()
+    .query("SELECT * FROM admin WHERE email = ?", [email])
+    .then(async (result) => {
+      if (result[0].length === 0)
+        return res.status(404).json({ msg: "Admin not found" });
       const secret = process.env.JWT_SECRET_KEY;
-      const token = jwt.sign({email: email}, secret, {expiresIn: process.env.REGISTRATION_EXPIRY});
+      const token = jwt.sign({ email: email }, secret, {
+        expiresIn: process.env.REGISTRATION_EXPIRY,
+      });
       const link = `http://localhost:${process.env.PORT}/api/admin/activateadmin/${token}`;
       console.log(link);
-    
+
       try {
         let info = await transporter.sendMail({
           from: "FRS",
@@ -104,107 +124,120 @@ const generateActivationLink = async (req, res) => {
           subject: "Your Activation Link",
           text: link,
         });
-      }
-      catch(err) {
+      } catch (err) {
         console.log(err);
-        return res.status(500).json({msg: "Error sending email"});
+        return res.status(500).json({ msg: "Error sending email" });
       }
-    
-      return res.status(200).json({msg: "Activation link sent to your email."});
-  });
+
+      return res
+        .status(200)
+        .json({ msg: "Activation link sent to your email." });
+    });
 };
 
 const activateAdmin = async (req, res) => {
-  const {token} = req.params;
+  const { token } = req.params;
   var email, expiry;
 
   try {
     var jwt_decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
     email = jwt_decoded.email;
     expiry = jwt_decoded.exp;
-  }
-  catch(err) {
+  } catch (err) {
     console.log(err);
-    return res.status(500).json({msg: "Invalid token"});
+    return res.status(500).json({ msg: "Invalid token" });
   }
 
-  if(expiry > new Date().getTime())
-    return res.status(410).json({msg: "Registration link expired. Please generate a new link."});
+  if (expiry > new Date().getTime())
+    return res
+      .status(410)
+      .json({ msg: "Registration link expired. Please generate a new link." });
 
-  db.query("SELECT status FROM admin WHERE email = ?", [email],
-  async (err, result) => {
-    if(err) {
-      console.log(err);
-      return res.status(500).json({msg: err.sqlMessage});
-    }
-    if(!result[0])
-      return res.status(404).json({msg: "Admin not found"});
-    if(result[0].status === 'ENABLED')
-      return res.status(409).json({msg: "Admin already verified"});
-    db.execute("UPDATE admin SET status = 'ENABLED' WHERE email = ?", [email],
-    (err) => {
-      if(err) {
+  db.query(
+    "SELECT status FROM admin WHERE email = ?",
+    [email],
+    async (err, result) => {
+      if (err) {
         console.log(err);
-        return res.status(500).json({msg: err.sqlMessage});
+        return res.status(500).json({ msg: err.sqlMessage });
       }
-      return res.status(200).json({msg: "Admin activated successfully"});
-    });
-  });
+      if (!result[0]) return res.status(404).json({ msg: "Admin not found" });
+      if (result[0].status === "ENABLED")
+        return res.status(409).json({ msg: "Admin already verified" });
+      db.execute(
+        "UPDATE admin SET status = 'ENABLED' WHERE email = ?",
+        [email],
+        (err) => {
+          if (err) {
+            console.log(err);
+            return res.status(500).json({ msg: err.sqlMessage });
+          }
+          return res.status(200).json({ msg: "Admin activated successfully" });
+        }
+      );
+    }
+  );
 };
 
 const generateResetLink = async (req, res) => {
-  const {email} = req.body;
+  const { email } = req.body;
 
-  db.promise().query("SELECT * FROM admin WHERE email = ?", [email])
-  .then(async (result) => {
-    if(result[0].length === 0)
-      return res.status(404).json({msg: "Admin not found"});
-    const secret = process.env.JWT_SECRET_KEY;
-    const token = jwt.sign({email: email}, secret, {expiresIn: process.env.PASSWORD_RESET_EXPIRY});
-    const link = `http://localhost:${process.env.PORT}/api/admin/resetpassword/${token}`;
-    console.log(link);
-    try {
-      let info = transporter.sendMail({
-        from: "FRS",
-        to: email,
-        subject: "Your Reset Link",
-        text: link,
+  db.promise()
+    .query("SELECT * FROM admin WHERE email = ?", [email])
+    .then(async (result) => {
+      if (result[0].length === 0)
+        return res.status(404).json({ msg: "Admin not found" });
+      const secret = process.env.JWT_SECRET_KEY;
+      const token = jwt.sign({ email: email }, secret, {
+        expiresIn: process.env.PASSWORD_RESET_EXPIRY,
       });
-    }
-    catch(err) {
-      console.log(err);
-      return res.status(500).json({msg: "Error sending email"});
-    }
-    return res.status(200).json({msg: "Password reset link sent to your email."});
-  });
+      const link = `http://localhost:${process.env.PORT}/api/admin/resetpassword/${token}`;
+      console.log(link);
+      try {
+        let info = transporter.sendMail({
+          from: "FRS",
+          to: email,
+          subject: "Your Reset Link",
+          text: link,
+        });
+      } catch (err) {
+        console.log(err);
+        return res.status(500).json({ msg: "Error sending email" });
+      }
+      return res
+        .status(200)
+        .json({ msg: "Password reset link sent to your email." });
+    });
 };
 
 const resetPassword = async (req, res) => {
-  const {token} = req.params;
-  const {newPass} = req.body;
+  const { token } = req.params;
+  const { newPass } = req.body;
   var email, expiry;
 
   try {
     var jwt_decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
     email = jwt_decoded.email;
     expiry = jwt_decoded.exp;
-  }
-  catch(err) {
+  } catch (err) {
     console.log(err);
-    return res.status(400).json({msg: "Invalid token"});
+    return res.status(400).json({ msg: "Invalid token" });
   }
 
-  if(expiry > new Date().getTime())
-    return res.status(410).json({msg: "Password Reset link expired. Please generate a new link."});
+  if (expiry > new Date().getTime())
+    return res
+      .status(410)
+      .json({
+        msg: "Password Reset link expired. Please generate a new link.",
+      });
 
   try {
     var hash = bcrypt.hashSync(newPass, 10);
-    db.execute("UPDATE admin SET password = ? WHERE email = ?",[hash, email]);
-    return res.status(200).json({msg: "password reset successfully"});
-  }
-  catch(err) {
+    db.execute("UPDATE admin SET password = ? WHERE email = ?", [hash, email]);
+    return res.status(200).json({ msg: "password reset successfully" });
+  } catch (err) {
     console.log(err);
-    return res.status(500).json({msg: err.sqlMessage});
+    return res.status(500).json({ msg: err.sqlMessage });
   }
 };
 
@@ -224,15 +257,22 @@ const adminLogin = async (req, res) => {
       if (!result[0][0]) {
         alog(" ", `Admin Login attempted with incorrect email: ${email}`);
         res.status(404).json({ msg: "user does not exist" });
-      } else if(result[0][0].status === 'disabled') {
+      } else if (result[0][0].status === "disabled") {
         alog(result[0][0].name, "Admin Login attempted with disabled account");
-        res.status(206).json({ msg: "account not activated yet. goto OTP page to activate account first" });
+        res
+          .status(206)
+          .json({
+            msg: "account not activated yet. goto OTP page to activate account first",
+          });
       } else {
         if (bcrypt.compareSync(password, result[0][0].password)) {
           alog(result[0][0].name, "Admin Login successful");
-          db.execute("INSERT INTO admin_log (change_by, change_on, change_type) VALUE (?, ?, ?)", [result[0][0].name, "SELF", "LOGIN"]);
+          db.execute(
+            "INSERT INTO admin_log (change_by, change_on, change_type) VALUE (?, ?, ?)",
+            [result[0][0].name, "SELF", "LOGIN"]
+          );
           const secret = process.env.JWT_SECRET_KEY;
-          const token = jwt.sign({name: result[0][0].name}, secret);
+          const token = jwt.sign({ name: result[0][0].name }, secret);
           res.status(200).json({ msg: "login successful", token: token });
         } else {
           alog(
@@ -266,7 +306,10 @@ const recognizeFace = async (req, res) => {
     extension += base64img.substring(11, base64img.indexOf(";"));
   }
   if (extension !== ".png" && extension !== ".jpeg") {
-    alog(last_modified_by, `Unsupported filetype: ${extension} input by the admin`);
+    alog(
+      last_modified_by,
+      `Unsupported filetype: ${extension} input by the admin`
+    );
     return res.status(415).json({ msg: "unsupported filetype" });
   }
 
@@ -287,25 +330,38 @@ const recognizeFace = async (req, res) => {
 
   const process = spawnSync("python3", [recface, imgpath]);
   try {
-    pyres = JSON.parse(String(process.stdout).replace(/'/g, '"'));    
-  }
-  catch(e) {
+    pyres = JSON.parse(String(process.stdout).replace(/'/g, '"'));
+  } catch (e) {
     console.log(e);
     console.log(String(process.stdout));
-    return res.status(400).json({msg:"something went wrong with python script"});
+    return res
+      .status(400)
+      .json({ msg: "something went wrong with python script" });
   }
 
-  const {errmsg, msg, usr_id, face_encoding} = pyres;
+  const { errmsg, msg, usr_id, face_encoding } = pyres;
 
-  if(errmsg) {
+  if (errmsg) {
     alog(last_modified_by, `Image with ${errmsg} input by the admin`);
     fs.unlinkSync(imgpath);
-    return res.status(216).json({msg: errmsg});
-  }
-  else {
-    alog(last_modified_by, `Image with ${msg.substring(0, msg.indexOf(" "))} user_id: ${usr_id} input by the admin`);
+    return res.status(216).json({ msg: errmsg });
+  } else {
+    alog(
+      last_modified_by,
+      `Image with ${msg.substring(
+        0,
+        msg.indexOf(" ")
+      )} user_id: ${usr_id} input by the admin`
+    );
     var sts = msg === "existing user" ? 200 : 211;
-    return res.status(sts).json({msg: msg, user_id: usr_id, extension: extension, face_encoding: face_encoding})
+    return res
+      .status(sts)
+      .json({
+        msg: msg,
+        user_id: usr_id,
+        extension: extension,
+        face_encoding: face_encoding,
+      });
   }
 };
 
@@ -600,7 +656,8 @@ const getFilteredUsers = async (req, res) => {
 };
 
 const getUserCaptureLog = async (req, res) => {
-  db.promise().query("CALL get_capture_log()")
+  db.promise()
+    .query("CALL get_capture_log()")
     .then((result) => {
       res.status(200).json(result[0][0]);
     })
@@ -608,13 +665,15 @@ const getUserCaptureLog = async (req, res) => {
       console.log(err);
       res.status(500).json({ msg: err.sqlMessage });
     });
-}
+};
 
 const getAdminLog = async (req, res) => {
-  const {last_modified_by} = req.body;
+  const { last_modified_by } = req.body;
   const admin_name = last_modified_by;
-  if (!admin_name) return res.status(206).json({ msg: "no admin_name provided" });
-  db.promise().query(`CALL get_admin_log(?)`, [admin_name])
+  if (!admin_name)
+    return res.status(206).json({ msg: "no admin_name provided" });
+  db.promise()
+    .query(`CALL get_admin_log(?)`, [admin_name])
     .then((result) => {
       res.status(200).json(result[0][0]);
     })
@@ -622,7 +681,7 @@ const getAdminLog = async (req, res) => {
       console.log(err);
       res.status(500).json({ msg: err.sqlMessage });
     });
-}
+};
 
 module.exports = {
   createAdmin,
@@ -640,5 +699,5 @@ module.exports = {
   getSortedUsers,
   getFilteredUsers,
   getUserCaptureLog,
-  getAdminLog
+  getAdminLog,
 };

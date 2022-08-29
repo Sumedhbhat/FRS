@@ -3,21 +3,26 @@ import axios from "axios";
 
 const initialState = {
   result: false,
-result: null,
+  result: null,
   error: null,
   loading: false,
   errorCode: null,
 };
 
-
 export const recognizeUser2 = createAsyncThunk(
   "recognize/recognizeUser2",
   async (image, { rejectWithValue, getState }) => {
     const data = await axios
-      .post(process.env.REACT_APP_SERVER + "/user/recognizeuser", {
-        base64img: image,
-        in_out_status: "IN",
-      })
+      .post(
+        process.env.REACT_APP_SERVER + "/user/recognizeuser",
+        {
+          headers: { Authorization: sessionStorage.getItem("token") },
+        },
+        {
+          base64img: image,
+          in_out_status: "IN",
+        }
+      )
       .then((res) => {
         console.log(res);
         if (res.status === 200) {
@@ -45,13 +50,13 @@ export const recognizeUser2 = createAsyncThunk(
         };
       });
     return data;
-  });
+  }
+);
 
 const attendance = createSlice({
   name: "attendance",
   initialState,
-  reducers: {
-  },
+  reducers: {},
   extraReducers: {
     [recognizeUser2.pending]: (state, action) => {
       state.loading = true;
@@ -67,6 +72,6 @@ const attendance = createSlice({
       state.result = action.payload.result;
       state.users = action.payload.users;
       state.error = action.payload.error;
-    }
-  }
+    },
+  },
 });

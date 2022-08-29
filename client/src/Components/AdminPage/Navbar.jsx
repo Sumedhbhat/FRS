@@ -35,7 +35,13 @@ const Navbar = ({ setOptionAdd }) => {
   const getHistory = async () => {
     const url = process.env.REACT_APP_SERVER + "/admin/adminlog";
     await axios
-      .post(url, { admin_name: admin })
+      .post(
+        url,
+        {
+          headers: { Authorization: sessionStorage.getItem("token") },
+        },
+        { admin_name: admin }
+      )
       .then((res) => {
         console.log(res.data);
         if (res.status === 200) setHistory(res.data);
@@ -51,7 +57,9 @@ const Navbar = ({ setOptionAdd }) => {
   const getUserHistory = async () => {
     const url = process.env.REACT_APP_SERVER + "/admin/users/capturelog";
     await axios
-      .get(url)
+      .get(url, {
+        headers: { Authorization: sessionStorage.getItem("token") },
+      })
       .then((res) => {
         console.log(res.data);
         if (res.status === 200) setUserHis(res.data);
@@ -70,16 +78,16 @@ const Navbar = ({ setOptionAdd }) => {
   return (
     <>
       <Box sx={{ px: 3 }}>
-        <Grid container spacing={2} justifyContent="center" alignItems="center">
+        <Grid container spacing={2} justifyContent='center' alignItems='center'>
           <Grid item xs={12} sm={12} md={4} lg={4}>
-            <Typography variant="h4">Admin Page</Typography>
+            <Typography variant='h4'>Admin Page</Typography>
           </Grid>
           <Grid item xs={6} sm={6} md={2} lg={2}>
             <Button
               ref={adminHistory}
-              variant="contained"
+              variant='contained'
               onClick={handleOpenAdmin}
-              color="primary"
+              color='primary'
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               fullWidth
@@ -102,17 +110,17 @@ const Navbar = ({ setOptionAdd }) => {
               }}
             >
               {history === null ? (
-                <Typography variant="body1">
+                <Typography variant='body1'>
                   The current user has not made any modifications
                 </Typography>
               ) : (
                 <TableContainer component={Paper}>
-                  <Table sx={{ minWidth: 650 }} size="small">
+                  <Table sx={{ minWidth: 650 }} size='small'>
                     <TableHead>
                       <TableRow>
                         <TableCell>Change On</TableCell>
-                        <TableCell align="right">Change Type</TableCell>
-                        <TableCell align="right">Change Time</TableCell>
+                        <TableCell align='right'>Change Type</TableCell>
+                        <TableCell align='right'>Change Time</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -123,11 +131,11 @@ const Navbar = ({ setOptionAdd }) => {
                             "&:last-child td, &:last-child th": { border: 0 },
                           }}
                         >
-                          <TableCell align="right">{item.change_on}</TableCell>
-                          <TableCell align="right">
+                          <TableCell align='right'>{item.change_on}</TableCell>
+                          <TableCell align='right'>
                             {item.change_type}
                           </TableCell>
-                          <TableCell align="right">
+                          <TableCell align='right'>
                             {item.change_time}
                           </TableCell>
                         </TableRow>
@@ -140,10 +148,10 @@ const Navbar = ({ setOptionAdd }) => {
           </Grid>
           <Grid item xs={6} sm={6} md={2} lg={2}>
             <Button
-              variant="contained"
+              variant='contained'
               ref={userHistory}
               onClick={handleOpenUser}
-              color="primary"
+              color='primary'
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               fullWidth
@@ -166,17 +174,17 @@ const Navbar = ({ setOptionAdd }) => {
               }}
             >
               {userHis === null || userHis.length === 0 ? (
-                <Typography variant="body1">
+                <Typography variant='body1'>
                   No capture log has been enabled
                 </Typography>
               ) : (
                 <TableContainer component={Paper}>
-                  <Table sx={{ minWidth: 650 }} size="small">
+                  <Table sx={{ minWidth: 650 }} size='small'>
                     <TableHead>
                       <TableRow>
                         <TableCell>Change On</TableCell>
-                        <TableCell align="right">Change Type</TableCell>
-                        <TableCell align="right">Change Time</TableCell>
+                        <TableCell align='right'>Change Type</TableCell>
+                        <TableCell align='right'>Change Time</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -187,11 +195,11 @@ const Navbar = ({ setOptionAdd }) => {
                             "&:last-child td, &:last-child th": { border: 0 },
                           }}
                         >
-                          <TableCell align="right">{item.change_on}</TableCell>
-                          <TableCell align="right">
+                          <TableCell align='right'>{item.change_on}</TableCell>
+                          <TableCell align='right'>
                             {item.change_type}
                           </TableCell>
-                          <TableCell align="right">
+                          <TableCell align='right'>
                             {item.change_time}
                           </TableCell>
                         </TableRow>
@@ -211,8 +219,8 @@ const Navbar = ({ setOptionAdd }) => {
             sx={{ display: "flex", justifyContent: "center" }}
           >
             <Button
-              variant="contained"
-              color="primary"
+              variant='contained'
+              color='primary'
               startIcon={<IoMdAddCircle />}
               component={motion.div}
               whileHover={{ scale: 1.1 }}
@@ -225,8 +233,8 @@ const Navbar = ({ setOptionAdd }) => {
           </Grid>
           <Grid item xs sx={{ display: "flex", justifyContent: "center" }}>
             <Button
-              variant="outlined"
-              color="primary"
+              variant='outlined'
+              color='primary'
               component={motion.div}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}

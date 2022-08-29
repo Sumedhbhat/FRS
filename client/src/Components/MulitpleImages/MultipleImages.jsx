@@ -37,7 +37,13 @@ const MultipleImages = () => {
       const url = process.env.REACT_APP_SERVER + "/user/attendancerecognition";
       setLoading(true);
       await axios
-        .post(url, { images: file })
+        .post(
+          url,
+          {
+            headers: { Authorization: sessionStorage.getItem("token") },
+          },
+          { images: file }
+        )
         .then((res) => {
           setShowImage(true);
           if (res.status === 200) setResult(res.data);
@@ -59,12 +65,12 @@ const MultipleImages = () => {
 
   return (
     <>
-      <Typography variant="h4" p={3}>
+      <Typography variant='h4' p={3}>
         Multiple Images Recognition
       </Typography>
       <Grid container>
         <Grid item xs={showImage ? 9 : 12}>
-          <Stack mt={2} spacing={3} justifyContent="center">
+          <Stack mt={2} spacing={3} justifyContent='center'>
             <div style={{ display: "flex", justifyContent: "center" }}>
               <FileBase64
                 value={file}
@@ -74,7 +80,7 @@ const MultipleImages = () => {
                 }}
               />
             </div>
-            <Grid container justifyContent="center">
+            <Grid container justifyContent='center'>
               {file !== "" &&
                 file.map((f, i) => {
                   return (
@@ -86,21 +92,21 @@ const MultipleImages = () => {
                         margin: "20px",
                         objectFit: "cover",
                       }}
-                      alt="uploaded"
+                      alt='uploaded'
                     />
                   );
                 })}
             </Grid>
             {error && (
-              <Typography variant="h5" color="error" align="center">
+              <Typography variant='h5' color='error' align='center'>
                 {error}
               </Typography>
             )}
             <Box sx={{ display: "flex", justifyContent: "center" }}>
               {loading && <CircularProgress />}
               <Button
-                variant="contained"
-                color="primary"
+                variant='contained'
+                color='primary'
                 onClick={handleUpload}
               >
                 {showImage ? "Reset" : "Upload"}
@@ -110,16 +116,16 @@ const MultipleImages = () => {
         </Grid>
         <Grid item xs={showImage ? 2.5 : 0}>
           {showImage && (
-            <Typography variant="h6" mb={3}>
+            <Typography variant='h6' mb={3}>
               The Recognized people in the images are:
             </Typography>
           )}
-          <Stack spacing={3} justifyContent="center">
+          <Stack spacing={3} justifyContent='center'>
             {result !== null &&
               showImage &&
               result.recognizedPeople.map((p, i) => {
                 return (
-                  <Grid container key={i} justifyContent="start">
+                  <Grid container key={i} justifyContent='start'>
                     <Grid item xs={2}>
                       <Avatar
                         src={require(`../../../../user_images/uploads/${p.img}`)}
@@ -128,7 +134,7 @@ const MultipleImages = () => {
                       />
                     </Grid>
                     <Grid item xs>
-                      <Typography variant="h6">{p.name}</Typography>
+                      <Typography variant='h6'>{p.name}</Typography>
                     </Grid>
                   </Grid>
                 );

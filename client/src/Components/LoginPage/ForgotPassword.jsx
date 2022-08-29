@@ -26,9 +26,15 @@ export default function ForgotPassword({ setForgotPass }) {
     if (!open) {
       setLoading(true);
       await axios
-        .post(process.env.REACT_APP_SERVER + "/admin/generateotp", {
-          email,
-        })
+        .post(
+          process.env.REACT_APP_SERVER + "/admin/generateotp",
+          {
+            headers: { Authorization: sessionStorage.getItem("token") },
+          },
+          {
+            email,
+          }
+        )
         .then((res) => {
           setLoading(false);
           if (res.status === 200) {
@@ -44,11 +50,17 @@ export default function ForgotPassword({ setForgotPass }) {
     } else {
       setLoading(true);
       await axios
-        .post(process.env.REACT_APP_SERVER + "/admin/resetpassword", {
-          email,
-          newPass,
-          otp,
-        })
+        .post(
+          process.env.REACT_APP_SERVER + "/admin/resetpassword",
+          {
+            headers: { Authorization: sessionStorage.getItem("token") },
+          },
+          {
+            email,
+            newPass,
+            otp,
+          }
+        )
         .then((res) => {
           setLoading(false);
           if (res.status === 200) {

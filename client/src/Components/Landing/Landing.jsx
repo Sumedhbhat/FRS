@@ -18,6 +18,7 @@ import { BiTimer } from "react-icons/bi";
 import Navbar from "./Navbar";
 import sample from "./assets/sample.jpeg";
 import silfralogo from "./assets/silfralogo.png";
+import Footer from "./Footer";
 import { useNavigate } from "react-router-dom";
 
 const Landing = () => {
@@ -279,6 +280,7 @@ const Landing = () => {
             </Stack>
           </Box>
         </Stack>
+        <Footer />
       </Box>
     </div>
   );

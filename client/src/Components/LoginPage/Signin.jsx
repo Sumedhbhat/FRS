@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import ForgotPassword from "./ForgotPassword";
 import { CircularProgress } from "@mui/material";
+import { toast, ToastContainer } from "react-toastify";
 
 export default function SignIn({ setLoginType }) {
   const navigate = useNavigate();
@@ -32,7 +33,7 @@ export default function SignIn({ setLoginType }) {
       .then((res) => {
         setLoading(false);
         if (res.status === 200) {
-          sessionStorage.setItem("username", res.data.admin_name);
+          sessionStorage.setItem("token", res.data.token);
           navigate("/admin");
         } else {
           setError(res.data.msg);
@@ -121,6 +122,7 @@ export default function SignIn({ setLoginType }) {
             </Grid>
           </Box>
         </Box>
+        <ToastContainer />
       </Container>
     );
   }
