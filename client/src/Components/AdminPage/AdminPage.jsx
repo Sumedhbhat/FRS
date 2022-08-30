@@ -20,7 +20,6 @@ import { IoMdClose } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 import UserCard from "./UserCard";
 import Search from "./UserActions/Search";
-import axios from "axios";
 import AddModal from "./UserActions/AddModal";
 import AddOptionAdd from "./UserActions/AddOptionAdd";
 import AddImageCapture from "./UserActions/AddImageCapture";
