@@ -17,16 +17,19 @@ const initialState = {
 export const recognizeImage = createAsyncThunk(
   "image/recognizeImage",
   async (obj, { getState, rejectWithValue }) => {
+    console.log(sessionStorage.getItem("token"));
     const data = await axios
       .post(
         process.env.REACT_APP_SERVER + "/admin/recognizeface",
         {
-          headers: { Authorization: sessionStorage.getItem("token") },
-        },
-        {
           base64img: getState().image.base64img,
           user_id: getState().image.user_id,
           admin: getState().admin.username,
+        },
+        {
+          headers: {
+            authorization: sessionStorage.getItem("token").toString(),
+          },
         }
       )
       .then(async (res) => {
@@ -34,9 +37,7 @@ export const recognizeImage = createAsyncThunk(
         if (res.status === 200) {
           const user = await axios
             .get(
-              process.env.REACT_APP_SERVER +
-                "/admin/users/?user_id=" +
-                res.data.user_id,
+              process.env.REACT_APP_SERVER + "/admin/users/" + res.data.user_id,
               {
                 headers: { Authorization: sessionStorage.getItem("token") },
               }

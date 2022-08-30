@@ -49,11 +49,11 @@ export const recognizeUser2 = createAsyncThunk(
       .post(
         process.env.REACT_APP_SERVER + "/user/recognizeuser",
         {
-          headers: { Authorization: sessionStorage.getItem("token") },
-        },
-        {
           base64img: image,
           in_out_status: "IN",
+        },
+        {
+          headers: { Authorization: sessionStorage.getItem("token") },
         }
       )
       .then((res) => {
@@ -96,11 +96,11 @@ export const recognizeUser = createAsyncThunk(
       .post(
         process.env.REACT_APP_SERVER + "/user/recognizeuser",
         {
-          headers: { Authorization: sessionStorage.getItem("token") },
-        },
-        {
           base64img: getState().recognize.image,
           in_out_status: "IN",
+        },
+        {
+          headers: { Authorization: sessionStorage.getItem("token") },
         }
       )
       .then((res) => {

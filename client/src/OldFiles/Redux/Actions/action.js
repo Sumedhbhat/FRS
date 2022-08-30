@@ -10,7 +10,9 @@ import axios from "axios";
 
 export const addUser = (user) => async (dispatch, getState) => {
   await axios
-    .get("/admin/users/create", user)
+    .get("/admin/users/create", user, {
+      headers: { Authorization: sessionStorage.getItem("token") },
+    })
     .then((res) => {
       if (res.status === 200) {
         dispatch({
@@ -24,7 +26,9 @@ export const addUser = (user) => async (dispatch, getState) => {
 
 export const getUsers = () => async (dispatch, getState) => {
   await axios
-    .get("http://localhost:3007/users")
+    .get("http://localhost:3007/users", {
+      headers: { Authorization: sessionStorage.getItem("token") },
+    })
     .then((res) => {
       if (res.status === 200) {
         dispatch({
@@ -40,14 +44,18 @@ export const getUsers = () => async (dispatch, getState) => {
 
 export const deleteUser = (id) => async (dispatch, getState) => {
   await axios
-    .delete("http://localhost:3007/users/" + id)
+    .delete("http://localhost:3007/users/" + id, {
+      headers: { Authorization: sessionStorage.getItem("token") },
+    })
     .then((res) => console.log(res))
     .catch((err) => console.log(err));
 };
 
 export const updateUser = (user) => async (dispatch, getState) => {
   await axios
-    .put("http://localhost:3007/users/" + user.id, user)
+    .put("http://localhost:3007/users/" + user.id, user, {
+      headers: { Authorization: sessionStorage.getItem("token") },
+    })
     .then((res) => console.log(res))
     .catch((err) => console.log(err));
 };

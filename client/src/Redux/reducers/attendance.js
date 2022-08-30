@@ -15,12 +15,13 @@ export const recognizeUser2 = createAsyncThunk(
     const data = await axios
       .post(
         process.env.REACT_APP_SERVER + "/user/recognizeuser",
-        {
-          headers: { Authorization: sessionStorage.getItem("token") },
-        },
+
         {
           base64img: image,
           in_out_status: "IN",
+        },
+        {
+          headers: { Authorization: sessionStorage.getItem("token") },
         }
       )
       .then((res) => {

@@ -15,10 +15,11 @@ export const adminLogin = createAsyncThunk(
     const data = await axios
       .post(
         process.env.REACT_APP_SERVER + "/admin/login",
+
+        loginDetails,
         {
           headers: { Authorization: sessionStorage.getItem("token") },
-        },
-        loginDetails
+        }
       )
       .then((res) => {
         console.log(res);
