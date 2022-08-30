@@ -29,10 +29,10 @@ export default function ForgotPassword({ setForgotPass }) {
         .post(
           process.env.REACT_APP_SERVER + "/admin/generateotp",
           {
-            headers: { Authorization: sessionStorage.getItem("token") },
+            email,
           },
           {
-            email,
+            headers: { Authorization: sessionStorage.getItem("token") },
           }
         )
         .then((res) => {
@@ -53,12 +53,12 @@ export default function ForgotPassword({ setForgotPass }) {
         .post(
           process.env.REACT_APP_SERVER + "/admin/resetpassword",
           {
-            headers: { Authorization: sessionStorage.getItem("token") },
-          },
-          {
             email,
             newPass,
             otp,
+          },
+          {
+            headers: { Authorization: sessionStorage.getItem("token") },
           }
         )
         .then((res) => {

@@ -8,14 +8,14 @@ export const addUser = createAsyncThunk(
       .post(
         process.env.REACT_APP_SERVER + "/admin/users/create",
         {
-          headers: { Authorization: sessionStorage.getItem("token") },
-        },
-        {
           ...user,
           user_id: getState().image.user_id,
           last_modified_by: getState().admin.username,
           extension: getState().image.extension,
           face_encoding: getState().image.face_encoding,
+        },
+        {
+          headers: { authorization: sessionStorage.getItem("token") },
         }
       )
       .then((res) => {
@@ -64,13 +64,9 @@ export const filterUsers = createAsyncThunk(
   async (filter, thunkAPI) => {
     console.log(filter);
     const data = await axios
-      .post(
-        process.env.REACT_APP_SERVER + "/admin/users/search",
-        {
-          headers: { Authorization: sessionStorage.getItem("token") },
-        },
-        filter
-      )
+      .post(process.env.REACT_APP_SERVER + "/admin/users/search", filter, {
+        headers: { Authorization: sessionStorage.getItem("token") },
+      })
       .then((res) => {
         if (res.status === 200) {
           console.log(res.data);
@@ -119,7 +115,7 @@ export const getUser = createAsyncThunk(
   "user/getUserStatus",
   async (user_id, thunkAPI) => {
     const data = await axios
-      .get(process.env.REACT_APP_SERVER + "/admin/users/?user_id=" + user_id, {
+      .get(process.env.REACT_APP_SERVER + "/admin/users/" + user_id, {
         headers: { Authorization: sessionStorage.getItem("token") },
       })
       .then((res) => {
@@ -147,7 +143,7 @@ export const updateUser = createAsyncThunk(
 
     const data = await axios
       .patch(
-        process.env.REACT_APP_SERVER + "/admin/users/?user_id=" + user.user_id,
+        process.env.REACT_APP_SERVER + "/admin/users/" + user.user_id,
         {
           headers: { Authorization: sessionStorage.getItem("token") },
         },
@@ -173,7 +169,7 @@ export const getDisplayUser = createAsyncThunk(
   "user/getDisplayUserStatus",
   async (user_id, thunkAPI) => {
     const data = await axios
-      .get(process.env.REACT_APP_SERVER + "/admin/users/?user_id=" + user_id, {
+      .get(process.env.REACT_APP_SERVER + "/admin/users/" + user_id, {
         headers: { Authorization: sessionStorage.getItem("token") },
       })
       .then((res) => {
@@ -198,10 +194,10 @@ export const checkFace = createAsyncThunk(
       .post(
         process.env.REACT_APP_SERVER + "/admin/recognizeFace",
         {
-          headers: { Authorization: sessionStorage.getItem("token") },
+          base64img: image,
         },
         {
-          base64img: image,
+          headers: { Authorization: sessionStorage.getItem("token") },
         }
       )
       .then((res) => {

@@ -39,10 +39,10 @@ const MultipleImages = () => {
       await axios
         .post(
           url,
+          { images: file },
           {
             headers: { Authorization: sessionStorage.getItem("token") },
-          },
-          { images: file }
+          }
         )
         .then((res) => {
           setShowImage(true);

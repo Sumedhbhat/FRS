@@ -37,10 +37,10 @@ const Navbar = ({ setOptionAdd }) => {
     await axios
       .post(
         url,
+        { admin_name: admin },
         {
           headers: { Authorization: sessionStorage.getItem("token") },
-        },
-        { admin_name: admin }
+        }
       )
       .then((res) => {
         console.log(res.data);

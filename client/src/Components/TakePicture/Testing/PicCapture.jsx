@@ -33,11 +33,11 @@ const PicCapture = () => {
       axios.post(
         "http://localhost:3090/",
         {
-          headers: { Authorization: sessionStorage.getItem("token") },
-        },
-        {
           img_string: imgSrc,
           img_name: "sumedh",
+        },
+        {
+          headers: { authorization: sessionStorage.getItem("token") },
         }
       );
     }
