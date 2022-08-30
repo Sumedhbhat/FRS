@@ -8,14 +8,16 @@ function pad(str, len) {
 }
 
 function clog(id, rec_stat, name) {
+    var date = pad(new Date().toLocaleString(), 25);
     if(rec_stat === "unrecognized") {
-        var padded = pad(`Img_id:  ${id}`, 50);
-        var datalog = `\n${new Date().toLocaleString()}\t${padded}\tDenied passage through the facial recognition system.`;
+        
+        var padded = pad(`Img_id:  ${id}`, 55);
+        var datalog = `\n${date}${padded}Denied passage through the facial recognition system.`;
         fs.appendFileSync(user_capture_file, datalog);
     }
     else {
-        var padded = pad(`User_id: ${id}`, 50);
-        var datalog = `\n${new Date().toLocaleString()}\t${padded}\t${name} was granted passage through the facial recognition system.`;
+        var padded = pad(`User_id: ${id}`, 55);
+        var datalog = `\n${date}${padded}${name} was granted passage through the facial recognition system.`;
         fs.appendFileSync(user_capture_file, datalog);
     }
 }

@@ -1,6 +1,6 @@
 {
-    "user": "vedanta",
+    "user": "root",
     "host": "localhost",
-    "password": "vedu123",
+    "password": "password",
     "database": "FRS"
 }

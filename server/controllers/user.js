@@ -9,6 +9,8 @@ const uploadsFolder = path.join(user_imagesFolder, "uploads");
 const tempFolder = path.join(user_imagesFolder, "temp");
 const deletesFolder = path.join(user_imagesFolder, "deletes");
 const capturesFolder = path.join(user_imagesFolder, "captures");
+const attendanceFolder = path.join(user_imagesFolder, "attendance");
+const output_json = path.join(__dirname, "..", "..", "outputs","attendance_outputs.json");
 
 const clog = require("../utils/captureLogger");
 
@@ -20,11 +22,12 @@ const fe_file = path.join(
 );
 const pyscripts = path.join(__dirname, "..", "pyscripts");
 const recface = path.join(pyscripts, "face_rec.py");
+const recface_attendance = path.join(pyscripts, "face_rec_attendance.py");
 
 const recognizeUser = async (req, res) => {
   var { base64img, in_out_status } = req.body;
 
-  if (!base64img) {
+  if (!base64img && !req.files.image) {
     return res.status(206).json({ msg: "no image recieved" });
   }
 
@@ -32,7 +35,12 @@ const recognizeUser = async (req, res) => {
     return res.status(400).send({ msg: "Invalid in_out_status" });
   }
 
-  var extension = "." + base64img.substring(11, base64img.indexOf(";"));
+  var extension = ".";
+  if (req.files && req.files.image) {
+    extension += req.files.image.mimetype.substring(6);
+  } else {
+    extension += base64img.substring(11, base64img.indexOf(";"));
+  }
   if (extension !== ".png" && extension !== ".jpeg") {
     return res.status(415).json({ msg: "unsupported filetype" });
   }
@@ -40,16 +48,24 @@ const recognizeUser = async (req, res) => {
 
   const imgpath = path.join(capturesFolder, img);
 
-  const base64str = base64img.substring(base64img.indexOf(",") + 1);
-  fs.writeFileSync(imgpath, base64str, "base64");
+  if (base64img) {
+    const base64str = base64img.substring(base64img.indexOf(",") + 1);
+    fs.writeFileSync(imgpath, base64str, "base64");
+  } else {
+    fs.writeFileSync(imgpath, req.files.image.data);
+  }
 
   var pyres = 0;
 
   const process = spawnSync("python3", [recface, imgpath, in_out_status]);
+  var result_from_python = String(process.stdout).split("\n");
+  result_from_python = result_from_python[result_from_python.length - 2];
   try {
-    pyres = JSON.parse(String(process.stdout).replace(/'/g, '"'));
+    pyres = JSON.parse(result_from_python.replace(/'/g, '"'));
   } catch (e) {
     console.log(e);
+    console.log(String(process.stderr));
+    console.log(String(process.stdout));
     return res
       .status(400)
       .json({ msg: "something went wrong with python script" });
@@ -66,12 +82,87 @@ const recognizeUser = async (req, res) => {
 
   if (!pyres.result[0]) {
     clog(img, "unrecognized");
-    return res.status(200).json({ msg: "face(s) not recognized", imgpath: img });
   }
 
   return res.status(200).json({ users: pyres.result, imgpath: img });
 };
 
+const attendanceRecognition = async (req, res) => {
+  var { images } = req.body;
+  if(!req.files && !images) {
+    return res.status(400).json({msg: 'No images were uploaded.'});
+  }
+
+  imgLocs = [];
+
+  if(images) {
+    for(var i = 0; i < images.length; i++) {
+      var img = images[i];
+      var extension = "." + img.substring(11, img.indexOf(";"));
+      if (extension !== ".png" && extension !== ".jpeg") {
+        return res.status(415).json({ msg: "unsupported filetype" });
+      }
+      var imgname = uuidv4() + extension;
+
+      const imgpath = path.join(attendanceFolder, imgname);
+
+      const base64str = img.substring(img.indexOf(",") + 1);
+      fs.writeFileSync(imgpath, base64str, "base64");
+      imgLocs.push(imgpath);
+    }
+  }
+  else {
+    for (const [key, file] of Object.entries(req.files)) {
+      var img = uuidv4() + "." + file.mimetype.split("/")[1];
+      const imgpath = path.join(attendanceFolder, img);
+      fs.writeFileSync(imgpath, file.data);
+      imgLocs.push(imgpath);
+    }
+  }
+  var pyres = 0;
+
+  const process = spawnSync("python3", [recface_attendance, imgLocs]);
+  try {
+    pyres = JSON.parse(String(process.stdout).replace(/'/g, '"'));
+  } catch (e) {
+      console.log(e);
+      console.log(String(process.stderr));
+      return res
+        .status(400)
+        .json({ msg: "something went wrong with python script" });
+    }
+  res.status(200).send(pyres);
+  
+  pyres["recognizedNames"] = [];
+
+  pyres["recognizedPeople"].forEach((person) => {
+    pyres["recognizedNames"].push(person["name"]);
+  });
+  
+  delete pyres["recognizedPeople"];
+
+  pyres["time of upload"] = new Date().toLocaleString();
+  pyres["images"] = imgLocs;
+  
+  fs.readFile(output_json, function (err, data) {
+    if(err)
+      console.log(err);
+    else {
+      var json = JSON.parse(data);
+      json.push(pyres);
+      json = JSON.stringify(json)
+        .replaceAll("{", "\n{\n")
+        .replaceAll(',"', ',\n"')
+        .replaceAll('["', '[\n"')
+        .replaceAll('"]', '"\n]')
+        .replaceAll(']}', ']\n}')
+        .replace('}]', '}\n]');
+      fs.writeFileSync(output_json, json);
+    }
+  });
+}
+
 module.exports = {
   recognizeUser,
+  attendanceRecognition
 };

@@ -42,14 +42,67 @@ const initialState = {
 //   }
 // );
 
+export const recognizeUser2 = createAsyncThunk(
+  "recognize/recognizeUser2",
+  async (image, { rejectWithValue, getState }) => {
+    const data = await axios
+      .post(
+        process.env.REACT_APP_SERVER + "/user/recognizeuser",
+        {
+          headers: { Authorization: sessionStorage.getItem("token") },
+        },
+        {
+          base64img: image,
+          in_out_status: "IN",
+        }
+      )
+      .then((res) => {
+        console.log(res);
+        console.log(res.data.face_liveness_confidence);
+        if (res.status === 200) {
+          return {
+            result: true,
+            loading: false,
+            users: res.data.users,
+            error: null,
+          };
+        } else {
+          return {
+            loading: false,
+            result: false,
+            users: null,
+            error: res.data.msg,
+            live_status: res.data.face_liveness_status,
+            live_confidence: res.data.face_liveness_confidence,
+          };
+        }
+      })
+      .catch((err) => {
+        return {
+          users: null,
+          loading: false,
+          result: false,
+          error: err.response.data.msg,
+        };
+      });
+    return data;
+  }
+);
+
 export const recognizeUser = createAsyncThunk(
   "recognize/recognizeUserStatus",
   async (image, { rejectWithValue, getState }) => {
     const data = await axios
-      .post(process.env.REACT_APP_SERVER + "/user/recognizeuser", {
-        base64img: getState().recognize.image,
-        in_out_status: "IN",
-      })
+      .post(
+        process.env.REACT_APP_SERVER + "/user/recognizeuser",
+        {
+          headers: { Authorization: sessionStorage.getItem("token") },
+        },
+        {
+          base64img: getState().recognize.image,
+          in_out_status: "IN",
+        }
+      )
       .then((res) => {
         console.log(res);
         if (res.status === 200) {
@@ -112,6 +165,26 @@ const recognize = createSlice({
       state.result = true;
       state.users = action.payload.users;
     });
+    builder.addCase(recognizeUser2.pending, (state, action) => {
+      state.error = null;
+      state.loading = true;
+      state.result = false;
+      state.users = null;
+    });
+    builder.addCase(recognizeUser2.rejected, (state, action) => {
+      state.error = action.payload.msg;
+      state.errorCode = action.payload.code;
+      state.loading = false;
+      state.result = false;
+      state.users = null;
+    });
+    builder.addCase(recognizeUser2.fulfilled, (state, action) => {
+      state.error = null;
+      state.loading = false;
+      state.result = true;
+      state.users = action.payload.users;
+    });
+
     // builder.addCase(getUser.pending, (state, action) => {
     //   state.allUsers = null;
     //   state.loading = true;

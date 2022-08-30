@@ -13,7 +13,13 @@ export const adminLogin = createAsyncThunk(
   async (loginDetails, { getState, rejectWithValue }) => {
     console.log(loginDetails);
     const data = await axios
-      .post(process.env.REACT_APP_SERVER + "/admin/login", loginDetails)
+      .post(
+        process.env.REACT_APP_SERVER + "/admin/login",
+        {
+          headers: { Authorization: sessionStorage.getItem("token") },
+        },
+        loginDetails
+      )
       .then((res) => {
         console.log(res);
         if (res.status === 200) {
@@ -35,7 +41,7 @@ const adminSlice = createSlice({
   initialState,
   reducers: {
     checkLogin: (state, action) => {
-      if (sessionStorage.getItem("username") !== null) {
+      if (sessionStorage.getItem("token") !== null) {
         state.username = sessionStorage.getItem("username");
         state.isLoggedIn = true;
         state.loading = false;
@@ -46,7 +52,7 @@ const adminSlice = createSlice({
       }
     },
     logOut: (state) => {
-      sessionStorage.removeItem("username");
+      sessionStorage.removeItem("token");
       state.username = null;
       state.isLoggedIn = false;
       state.loading = false;
@@ -60,10 +66,10 @@ const adminSlice = createSlice({
     });
     builder.addCase(adminLogin.fulfilled, (state, action) => {
       state.isLoggedIn = true;
-      state.username = action.payload.username;
+      state.username = action.payload.token;
       state.error = null;
       state.loading = false;
-      sessionStorage.setItem("username", action.payload.username);
+      sessionStorage.setItem("token", action.payload.token);
     });
     builder.addCase(adminLogin.rejected, (state, action) => {
       state.isLoggedIn = false;
