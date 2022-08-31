@@ -10,17 +10,19 @@ import axios from "axios";
 import { CircularProgress } from "@mui/material";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useParams } from "react-router-dom";
 
-export default function ForgotPassword({ setForgotPass }) {
-  const [email, setEmail] = useState("");
+const ResetPassword = () => {
+  const [newPass, setNewPass] = useState("");
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const { token } = useParams();
   const handleSubmit = async (event) => {
     setLoading(true);
     event.preventDefault();
     await axios
-      .post(process.env.REACT_APP_SERVER + "/admin/generateactivationlink", {
-        email,
+      .post(process.env.REACT_APP_SERVER + "/admin/resetpassword/" + token, {
+        newPass,
       })
       .then((res) => {
         setLoading(false);
@@ -38,7 +40,7 @@ export default function ForgotPassword({ setForgotPass }) {
 
   return (
     <ToastContainer>
-      <Container component="main" maxWidth="xs">
+      <Container component='main' maxWidth='xs'>
         <Box
           sx={{
             marginTop: 8,
@@ -50,42 +52,43 @@ export default function ForgotPassword({ setForgotPass }) {
           <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
             <BsFillLockFill />
           </Avatar>
-          <Typography component="h1" variant="h5">
-            Forgot Password
+          <Typography component='h1' variant='h5'>
+            Reset Password
           </Typography>
           <Box
-            component="form"
+            component='form'
             onSubmit={handleSubmit}
             noValidate
             sx={{ mt: 1 }}
           >
             <TextField
-              margin="normal"
+              margin='normal'
               required
               fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              autoComplete="email"
+              id='password'
+              label='New Password'
+              name='newPassword'
+              value={newPass}
+              onChange={(e) => setNewPass(e.target.value)}
               autoFocus
             />
             {loading && (
-              <CircularProgress display="flex" justifyContent={"center"} />
+              <CircularProgress display='flex' justifyContent={"center"} />
             )}
-            {error && <Typography color="error">{error}</Typography>}
+            {error && <Typography color='error'>{error}</Typography>}
             <Button
-              type="submit"
+              type='submit'
               fullWidth
-              variant="contained"
+              variant='contained'
               sx={{ mt: 3, mb: 2 }}
             >
-              Generate Activation Link
+              Reset Password
             </Button>
           </Box>
         </Box>
       </Container>
     </ToastContainer>
   );
-}
+};
+
+export default ResetPassword;
