@@ -10,8 +10,11 @@ import axios from "axios";
 import { CircularProgress } from "@mui/material";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
 
-export default function ForgotPassword({ setForgotPass }) {
+const ForgotPassword = () => {
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -19,7 +22,7 @@ export default function ForgotPassword({ setForgotPass }) {
     setLoading(true);
     event.preventDefault();
     await axios
-      .post(process.env.REACT_APP_SERVER + "/admin/generateactivationlink", {
+      .post(process.env.REACT_APP_SERVER + "/admin/generateresetlink", {
         email,
       })
       .then((res) => {
@@ -37,55 +40,61 @@ export default function ForgotPassword({ setForgotPass }) {
   };
 
   return (
-    <ToastContainer>
-      <Container component="main" maxWidth="xs">
-        <Box
-          sx={{
-            marginTop: 8,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-            <BsFillLockFill />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Forgot Password
-          </Typography>
-          <Box
-            component="form"
-            onSubmit={handleSubmit}
-            noValidate
-            sx={{ mt: 1 }}
-          >
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              autoComplete="email"
-              autoFocus
+    <Container component='main' maxWidth='xs'>
+      <Box
+        sx={{
+          marginTop: 8,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+          <BsFillLockFill />
+        </Avatar>
+        <Typography component='h1' variant='h5'>
+          Forgot Password
+        </Typography>
+        <Box component='form' onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+          <TextField
+            margin='normal'
+            required
+            fullWidth
+            id='email'
+            label='Email Address'
+            name='email'
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            autoComplete='email'
+            autoFocus
+          />
+          {loading && (
+            <CircularProgress
+              display='flex'
+              sx={{ display: "flex", justifyContent: "center" }}
             />
-            {loading && (
-              <CircularProgress display="flex" justifyContent={"center"} />
-            )}
-            {error && <Typography color="error">{error}</Typography>}
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
-              Generate Activation Link
-            </Button>
-          </Box>
+          )}
+          {error && <Typography color='error'>{error}</Typography>}
+          <Button
+            type='submit'
+            fullWidth
+            variant='contained'
+            sx={{ mt: 3, mb: 2 }}
+          >
+            Generate Activation Link
+          </Button>
+          <Button
+            fullWidth
+            variant='contained'
+            onClick={() => navigate("/login")}
+            sx={{ mt: 3, mb: 2 }}
+          >
+            Return to Login Screen
+          </Button>
         </Box>
-      </Container>
-    </ToastContainer>
+      </Box>
+    </Container>
   );
-}
+};
+
+export default ForgotPassword;

@@ -12,6 +12,7 @@ import TakePicture2 from "./Components/TakePicture2/TakePicture2";
 import MultipleImages from "./Components/MulitpleImages/MultipleImages";
 import Landing from "./Components/Landing/Landing";
 import ResetPassword from "./Components/LoginPage/ResetPassword";
+import ForgotPassword from "./Components/LoginPage/ForgotPassword";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -32,6 +33,8 @@ const App = () => {
         <Route path='/pic-capture2' element={<TakePicture2 />} />
         <Route path='/multiple-images' element={<MultipleImages />} />
         <Route path='/admin/resetpassword/:token' element={<ResetPassword />} />
+        <Route path='/forgotPassword' element={<ForgotPassword />} />
+
         <Route path='*' element={<h1>Not Found</h1>} />
       </Routes>
     </Router>
