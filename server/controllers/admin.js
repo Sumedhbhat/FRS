@@ -114,7 +114,7 @@ const generateActivationLink = async (req, res) => {
       const token = jwt.sign({ email: email }, secret, {
         expiresIn: process.env.REGISTRATION_EXPIRY,
       });
-      const link = `http://localhost:${process.env.PORT}/api/admin/activateadmin/${token}`;
+      const link = `http://silfratech.in/api/admin/activateadmin/${token}`;
       console.log(link);
 
       try {
@@ -191,7 +191,7 @@ const generateResetLink = async (req, res) => {
       const token = jwt.sign({ email: email }, secret, {
         expiresIn: process.env.PASSWORD_RESET_EXPIRY,
       });
-      const link = `http://localhost:${process.env.PORT}/api/admin/resetpassword/${token}`;
+      const link = `http://silfratech.in/api/admin/resetpassword/${token}`;
       console.log(link);
       try {
         let info = transporter.sendMail({
