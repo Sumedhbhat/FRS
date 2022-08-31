@@ -191,7 +191,7 @@ const generateResetLink = async (req, res) => {
       const token = jwt.sign({ email: email }, secret, {
         expiresIn: process.env.PASSWORD_RESET_EXPIRY,
       });
-      const link = `http://silfratech.in/api/admin/resetpassword/${token}`;
+      const link = `http://silfratech.in/frs/admin/resetpassword/${token}`;
       console.log(link);
       try {
         let info = transporter.sendMail({
