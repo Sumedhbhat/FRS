@@ -62,7 +62,7 @@ const createAdmin = async (req, res) => {
         const token = jwt.sign({ email: email }, secret, {
           expiresIn: process.env.REGISTRATION_EXPIRY,
         });
-        const link = `http://localhost:${process.env.PORT}/api/admin/activateadmin/${token}`;
+        const link = `http://silfratech.in/api/admin/activateadmin/${token}`;
         console.log(link);
         try {
           let info = await transporter.sendMail({
