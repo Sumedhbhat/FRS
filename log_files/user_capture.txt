@@ -1,1 +1,8 @@
 This file keeps track of images captured from the user's end and the access management.
+
+7/26/2022, 10:31:15 AM	User_id: eb46fa8a-bb77-4577-a866-35ca7a949e2a     	Vedansh was granted passage through the facial recognition system.
+8/10/2022, 7:33:10 PM	Img_id:  88e25855-5f6f-4ffd-abcb-5d119d20f4c6.jpeg	Denied passage through the facial recognition system.
+8/10/2022, 7:36:38 PM	Img_id:  0064e399-ff56-4298-844b-65afabde4d76.jpeg	Denied passage through the facial recognition system.
+8/18/2022, 11:55:23 AM	Img_id:  25f8b2c0-ff19-43e9-b481-837d42b24593.jpeg	Denied passage through the facial recognition system.
+8/18/2022, 12:44:47 PM	Img_id:  9d4716c8-dbf9-4175-9827-3429799146b1.jpeg	Denied passage through the facial recognition system.
+8/18/2022, 12:45:21 PM	Img_id:  610f2369-f856-4c97-a6bd-52571f4be805.jpeg	Denied passage through the facial recognition system.
