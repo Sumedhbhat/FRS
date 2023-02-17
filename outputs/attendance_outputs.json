@@ -44,5 +44,55 @@
 "images":[
 "/home/sumedh/Documents/FRS/user_images/attendance/bf4f2fb7-851d-4e4c-b464-1069c7bb57d9.jpeg"
 ]
+},
+{
+"uploaded":3,
+"detected":2,
+"recognized":0,
+"recognizedNames":[],
+"time of upload":"14/2/2023, 11:31:27 am",
+"images":[
+"/home/sumedh/Documents/FRS/user_images/attendance/6cbe6028-53b4-4a42-b38d-1998454f57ae.jpeg",
+"/home/sumedh/Documents/FRS/user_images/attendance/b24b5e21-9af4-4de6-98e1-dd7be26f212e.jpeg",
+"/home/sumedh/Documents/FRS/user_images/attendance/fbe92c87-8920-475d-a7aa-4dfa4b9813bc.jpeg"
+]
+},
+{
+"uploaded":2,
+"detected":2,
+"recognized":0,
+"recognizedNames":[],
+"time of upload":"14/2/2023, 11:32:11 am",
+"images":[
+"/home/sumedh/Documents/FRS/user_images/attendance/5d88eb78-b1cd-451a-8aa9-dddb3bb23566.jpeg",
+"/home/sumedh/Documents/FRS/user_images/attendance/c6353bb9-c9e3-48d9-bc9f-8ef7b1d887c3.jpeg"
+]
+},
+{
+"uploaded":2,
+"detected":2,
+"recognized":1,
+"recognizedNames":[
+"Random"
+],
+"time of upload":"14/2/2023, 11:34:22 am",
+"images":[
+"/home/sumedh/Documents/FRS/user_images/attendance/49064c3c-3f1d-4ee0-a1ec-229cf1f23b09.jpeg",
+"/home/sumedh/Documents/FRS/user_images/attendance/1b531763-5c1c-4983-a80e-19ea66de5779.jpeg"
+]
+},
+{
+"uploaded":2,
+"detected":2,
+"recognized":2,
+"recognizedNames":[
+"Random1",
+"Random"
+],
+"time of upload":"14/2/2023, 12:05:02 pm",
+"images":[
+"/home/sumedh/Documents/FRS/user_images/attendance/b681225c-9381-484f-a1df-310d7b36b290.jpeg",
+"/home/sumedh/Documents/FRS/user_images/attendance/5ce5314f-f886-4f0c-b244-253412039ae4.jpeg"
+]
 }
 ]

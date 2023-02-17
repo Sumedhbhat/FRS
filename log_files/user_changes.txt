@@ -1,1 +1,5 @@
 This file keeps track of changes made to user data in the system.
+
+14/2/2023, 10:23:22 am	User_id: e9111ff3-c687-4107-9534-c41ed81ca665	User created.
+14/2/2023, 11:33:10 am	User_id: 18c8f217-9afb-4793-b8ed-30c35f37323b	User created.
+14/2/2023, 12:02:58 pm	User_id: 4138b093-bcf4-4275-aa98-ac35408b807b	User created.

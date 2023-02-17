@@ -1,1 +1,6 @@
 This file keeps track of images captured from the user's end and the access management.
+
+14/2/2023, 11:33:40 am   User_id: e9111ff3-c687-4107-9534-c41ed81ca665          Sumedh Bhat was granted passage through the facial recognition system.
+14/2/2023, 11:33:59 am   User_id: e9111ff3-c687-4107-9534-c41ed81ca665          Sumedh Bhat was granted passage through the facial recognition system.
+14/2/2023, 12:03:54 pm   User_id: e9111ff3-c687-4107-9534-c41ed81ca665          Sumedh Bhat was granted passage through the facial recognition system.
+14/2/2023, 12:04:34 pm   User_id: e9111ff3-c687-4107-9534-c41ed81ca665          Sumedh Bhat was granted passage through the facial recognition system.

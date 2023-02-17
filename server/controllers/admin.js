@@ -52,11 +52,9 @@ const createAdmin = async (req, res) => {
     .query("SELECT * FROM admin WHERE email = ?", [email])
     .then(async (result) => {
       if (result[0].length > 0) {
-        res
-          .status(206)
-          .json({
-            msg: "Admin with given email address already exists. Please go to the login page to login.",
-          });
+        res.status(206).json({
+          msg: "Admin with given email address already exists. Please go to the login page to login.",
+        });
       } else {
         const secret = process.env.JWT_SECRET_KEY;
         const token = jwt.sign({ email: email }, secret, {
@@ -87,11 +85,9 @@ const createAdmin = async (req, res) => {
               "INSERT INTO admin_log (change_by, change_on, change_type) VALUE (?, ?, ?)",
               [name, "SELF", "CREATE"]
             );
-            res
-              .status(200)
-              .json({
-                msg: "Admin created, click the activation link sent via email to activate.",
-              });
+            res.status(200).json({
+              msg: "Admin created, click the activation link sent via email to activate.",
+            });
           });
         console.log("here");
       }
@@ -225,11 +221,9 @@ const resetPassword = async (req, res) => {
   }
 
   if (expiry > new Date().getTime())
-    return res
-      .status(410)
-      .json({
-        msg: "Password Reset link expired. Please generate a new link.",
-      });
+    return res.status(410).json({
+      msg: "Password Reset link expired. Please generate a new link.",
+    });
 
   try {
     var hash = bcrypt.hashSync(newPass, 10);
@@ -259,11 +253,9 @@ const adminLogin = async (req, res) => {
         res.status(404).json({ msg: "user does not exist" });
       } else if (result[0][0].status === "disabled") {
         alog(result[0][0].name, "Admin Login attempted with disabled account");
-        res
-          .status(206)
-          .json({
-            msg: "account not activated yet. goto OTP page to activate account first",
-          });
+        res.status(206).json({
+          msg: "account not activated yet. goto OTP page to activate account first",
+        });
       } else {
         if (bcrypt.compareSync(password, result[0][0].password)) {
           alog(result[0][0].name, "Admin Login successful");
@@ -330,6 +322,8 @@ const recognizeFace = async (req, res) => {
 
   const process = spawnSync("python3", [recface, imgpath]);
   try {
+    // console.log(process);
+    console.log(process.stdout);
     pyres = JSON.parse(String(process.stdout).replace(/'/g, '"'));
   } catch (e) {
     console.log(e);
@@ -354,14 +348,12 @@ const recognizeFace = async (req, res) => {
       )} user_id: ${usr_id} input by the admin`
     );
     var sts = msg === "existing user" ? 200 : 211;
-    return res
-      .status(sts)
-      .json({
-        msg: msg,
-        user_id: usr_id,
-        extension: extension,
-        face_encoding: face_encoding,
-      });
+    return res.status(sts).json({
+      msg: msg,
+      user_id: usr_id,
+      extension: extension,
+      face_encoding: face_encoding,
+    });
   }
 };
 
